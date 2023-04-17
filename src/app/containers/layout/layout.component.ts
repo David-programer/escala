@@ -5,6 +5,13 @@ import { Component } from '@angular/core';
   templateUrl: './layout.component.html',
   styleUrls: ['./layout.component.css']
 })
-export class LayoutComponent {
 
+export class LayoutComponent {
+  public navItems:any[] = [
+    {icon: 'cil-home', title: 'Inicio', notifications: false},
+    {icon: 'cil-people', title: 'Usuarios', notifications: false},
+    {icon: 'cil-laptop', title: 'Proyectos', notifications: 5},
+    {icon: 'cil-book', title: 'Inventario', notifications: 0},
+    {icon: 'cil-baseball', title: 'Herramientas', notifications: 0},
+  ]
 }

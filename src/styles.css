@@ -2,3 +2,8 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+.btn-primary{
+    background-color: #FF3D00;
+    @apply text-white hover:bg-orange-400 rounded-md py-1.5
+}

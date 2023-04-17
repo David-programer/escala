@@ -1,6 +1,9 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
+import { IdentityGuard } from './services/identity.guard';
+import { HomeComponent } from './views/home/home.component';
 import { LoginComponent } from './views/login/login.component';
+import { LayoutComponent } from './containers/layout/layout.component';
 
 const routes: Routes = [
   { path: '', redirectTo: 'login', pathMatch: 'full'},
@@ -8,6 +11,11 @@ const routes: Routes = [
   // { path: '500', component: P500Component, data: { title: 'Page 500' } },
   // canActivate: [LoginGuard]
   { path: 'login', component: LoginComponent, data: { title: 'Login Page' }},
+  { path: '', component: LayoutComponent, data: { title: '' }, canActivate: [IdentityGuard],
+    children: [
+      { path: 'home',component: HomeComponent, data: { title: 'Inicio' } },
+     ]
+  },
 ];
 
 @NgModule({
