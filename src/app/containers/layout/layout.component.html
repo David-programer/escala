@@ -1,12 +1,12 @@
 <div class="w-full h-full">
     <div class="flex flex-no-wrap h-screen">
 
-        <div style="min-height: 500px" class="w-64 absolute sm:relative bg-gray-800 shadow md:h-full flex-col justify-between hidden sm:flex">
+        <div style="min-height: 500px" class="w-72 absolute sm:relative bg-gray-800 shadow md:h-full flex-col justify-between hidden sm:flex">
             <div class="px-4 flex flex-col items-center h-full">
-                <img class="mt-6 w-48" src="../../../assets/brand/logo.png">
+                <img class="mt-6 w-48" src="assets/brand/logo.png">
 
                 <ul class="mt-12 w-full">
-                    <li *ngFor="let item of navItems" class="flex w-full items-center text-gray-300 cursor-pointer mb-2 hover:bg-gray-700 p-2 rounded">
+                    <li *ngFor="let item of navItems" [ngClass]="currentPage == item.url ? 'bg-gray-600 text-white': 'hover:bg-gray-700 text-gray-300'" class="flex w-full items-center  cursor-pointer mb-2 p-2 rounded" [routerLink]="[item.url]" >
                         <span class="w-5 h-5 {{item.icon}}" ></span>
                         <p class="text-sm ml-2">{{item.title}}</p>
                         <div *ngIf="item.notifications" class="ml-auto py-1 px-3 bg-gray-600 rounded text-gray-300 text-xs">{{item.notifications}}</div>
@@ -54,7 +54,7 @@
             </div>
         </div>
 
-        <main>
+        <main class="w-full p-4">
             <router-outlet></router-outlet>
         </main>
     </div>     

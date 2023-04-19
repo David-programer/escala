@@ -3,7 +3,14 @@
 @tailwind components;
 @tailwind utilities;
 
+:root{
+    --main: #FF3D00;
+}
+
+.bg-primary{
+    background-color: var(--main);
+}
+
 .btn-primary{
-    background-color: #FF3D00;
-    @apply text-white hover:bg-orange-400 rounded-md py-1.5
+    @apply text-white hover:bg-orange-400 rounded-md py-1.5 bg-primary
 }

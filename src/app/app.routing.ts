@@ -4,6 +4,7 @@ import { IdentityGuard } from './services/identity.guard';
 import { HomeComponent } from './views/home/home.component';
 import { LoginComponent } from './views/login/login.component';
 import { LayoutComponent } from './containers/layout/layout.component';
+import { UsersComponent } from './views/users/users.component';
 
 const routes: Routes = [
   { path: '', redirectTo: 'login', pathMatch: 'full'},
@@ -14,6 +15,7 @@ const routes: Routes = [
   { path: '', component: LayoutComponent, data: { title: '' }, canActivate: [IdentityGuard],
     children: [
       { path: 'home',component: HomeComponent, data: { title: 'Inicio' } },
+      { path: 'users',component: UsersComponent, data: { title: 'Usuarios' } },
      ]
   },
 ];
