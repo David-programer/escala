@@ -1,13 +1,12 @@
 "use strict";
 
-const _electron = require("electron");
-const { app, BrowserWindow } = require("electron");
+const { app, BrowserWindow, screen} = require("electron");
 const args = process.argv.slice(1), serve = args.some(val => val === '--serve');
 
 let appWin;
 
 const createWindow = ()=>{
-    const {width, height} = _electron.screen.getPrimaryDisplay().workAreaSize;
+    const {width, height} = screen.getPrimaryDisplay().workAreaSize;
 
     appWin = new BrowserWindow({
         width,
@@ -37,7 +36,7 @@ const createWindow = ()=>{
 
 //----------------------------------------- EVENTOS ------------------------------------------------//
 
-app.on("ready", createWindow);
+app.on("ready", () => setTimeout(createWindow, 400));
 
 app.on("window-all-closed", () => {
     if (process.platform !== "darwin") {

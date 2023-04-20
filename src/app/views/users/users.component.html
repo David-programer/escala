@@ -1,5 +1,10 @@
 <div>
     <div>
+
+        <app-form-dynamic
+        
+        ></app-form-dynamic>
+
         <app-datatable
             [data]="data"
             [keys]="['name', 'color', 'category', 'precio']"
@@ -8,3 +13,5 @@
         ></app-datatable>
     </div>
 </div>
+
+<app-loading *ngIf="loading"></app-loading>

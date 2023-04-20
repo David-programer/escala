@@ -5,12 +5,13 @@
   "scripts": {
     "ng": "ng",
     "test": "ng test",
-    "start": "ng serve",
+    "start": "ng serve --proxy-config proxy.conf.json",
     "build": "ng build",
     "electron:serve": "electron . --serve",
     "dev": "ng serve --watch && electron .",
     "pro:windows": "electron-builder --win",
-    "watch": "ng build --watch --configuration development"
+    "watch": "ng build --watch --configuration development",
+    "start:proxy": "ng serve --proxy-config  proxy.conf.json  --open"
   },
   "private": true,
   "dependencies": {

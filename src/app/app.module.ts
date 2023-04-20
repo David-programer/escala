@@ -7,10 +7,12 @@ import { AppComponent } from './app.component';
 import { IdentityGuard } from './services/identity.guard';
 import { HomeComponent } from './views/home/home.component';
 import { LoginComponent } from './views/login/login.component';
-import { LayoutComponent } from './containers/layout/layout.component';
-import { IconModule, IconSetModule, IconSetService } from '@coreui/icons-angular';
 import { UsersComponent } from './views/users/users.component';
+import { LayoutComponent } from './containers/layout/layout.component';
+import { LoadingComponent } from './components/loading/loading.component';
 import { DatatableComponent } from './components/datatable/datatable.component';
+import { IconModule, IconSetModule, IconSetService } from '@coreui/icons-angular';
+import { FormDynamicComponent } from './components/form-dynamic/form-dynamic.component';
 
 
 @NgModule({
@@ -21,6 +23,8 @@ import { DatatableComponent } from './components/datatable/datatable.component';
     HomeComponent,
     UsersComponent,
     DatatableComponent,
+    LoadingComponent,
+    FormDynamicComponent,
   ],
   imports: [
     BrowserModule,

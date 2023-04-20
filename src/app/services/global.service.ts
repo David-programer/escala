@@ -26,6 +26,13 @@ export class GlobalService {
     }
 
     public get_service(url:string){        
-        return this._http.get(`${this.url}${url}`)
+        return this._http.get(`${this.url}${url}`, 
+        // {
+        //     headers: {
+        //         "Access-Control-Allow-Origin": "*",
+        //         "Sec-Fetch-Mode": "cors"
+        //     }
+        // }
+        )
     }
 }
