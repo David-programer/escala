@@ -16,6 +16,7 @@ import { IconModule, IconSetModule, IconSetService } from '@coreui/icons-angular
 import { FormDynamicComponent } from './components/form-dynamic/form-dynamic.component';
 import { ProyectsComponent } from './views/proyects/proyects.component';
 import { InventarioComponent } from './views/inventario/inventario.component';
+import { CreateComponent } from './views/proyects/create/create.component';
 
 
 @NgModule({
@@ -30,6 +31,7 @@ import { InventarioComponent } from './views/inventario/inventario.component';
     FormDynamicComponent,
     ProyectsComponent,
     InventarioComponent,
+    CreateComponent,
   ],
   imports: [
     BrowserModule,
