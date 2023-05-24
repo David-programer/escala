@@ -84,7 +84,7 @@ export class InventarioComponent implements OnInit {
     this._globalService.get_service('/inventario_material/lista_inventario_material?id=').subscribe({
       next: (response:any)=>{
         if(response.successful){
-          this.datatableInventario?.renderData.next(response.data);
+          this.datatableInventario?.renderData?.next(response.data);
         }
         this.close_loading();
       },

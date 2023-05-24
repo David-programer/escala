@@ -17,6 +17,7 @@ import { FormDynamicComponent } from './components/form-dynamic/form-dynamic.com
 import { ProyectsComponent } from './views/proyects/proyects.component';
 import { InventarioComponent } from './views/inventario/inventario.component';
 import { CreateComponent } from './views/proyects/create/create.component';
+import { HerramientasComponent } from './views/herramientas/herramientas.component';
 
 
 @NgModule({
@@ -32,6 +33,7 @@ import { CreateComponent } from './views/proyects/create/create.component';
     ProyectsComponent,
     InventarioComponent,
     CreateComponent,
+    HerramientasComponent,
   ],
   imports: [
     BrowserModule,

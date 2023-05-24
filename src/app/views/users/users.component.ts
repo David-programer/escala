@@ -80,7 +80,7 @@ export class UsersComponent implements OnInit{
     this._globalService.get_service('/user/lista_users?id=').subscribe({
       next: (response:any)=>{
         if(response.successful){
-          this.datatableUsers?.renderData.next(
+          this.datatableUsers?.renderData?.next(
             response.data.map((item:any) => {
               item.activo = Boolean(item.activo) ? 'Sí' : 'No';
               return item
@@ -90,7 +90,7 @@ export class UsersComponent implements OnInit{
         this.loading = false;
       },
       error: (error)=>{
-        this.datatableUsers?.renderData.next([])
+        this.datatableUsers?.renderData?.next([])
         this.loading = false;
       }
     })
