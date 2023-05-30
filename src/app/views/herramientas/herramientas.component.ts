@@ -14,12 +14,55 @@ export class HerramientasComponent implements OnInit {
   constructor(private _globalService: GlobalService){}
 
   public inputs:any[] = [];
+  public id_update:string = '';
   public loading:boolean = true;
   public state_edith:boolean = false;
   public closeLoading = {count_request: 0, total_request: 2};
 
   @ViewChild('form_dynamic') form_dynamic:FormDynamicComponent | null = null;
   @ViewChild('datatableHerramientas') datatableHerramientas:DatatableComponent | null = null;
+
+  public scrollTo(id:string){
+    setTimeout(() => {
+      document.querySelector('main')?.scroll({top: document.getElementById(id)?.offsetTop ?? 0 + 100, behavior: 'smooth'});
+    }, 0);
+  }
+
+  public create_or_update($event:any):void{
+    this.loading = true;
+    
+    this._globalService.post_service('/herramienta/insert_herramienta', {...$event, id: this.state_edith ? this.id_update : "" }).subscribe((response:any) => {
+      if(response.successful){
+        if(this.state_edith){
+          this.datatableHerramientas?.renderData?.next(
+            this.datatableHerramientas?.renderData?.getValue().map(element=> element.id == this.id_update ? response.data[0] : element)
+          );
+        }else this.datatableHerramientas?.renderData?.next([...response.data, ...this.datatableHerramientas?.renderData?.getValue() ?? []]);
+
+        this.state_edith = false;
+        this.form_dynamic?.form_group.reset();
+      }
+      this.loading = false;
+    });
+  }
+
+  public load_update(data:any):void{
+    Object.entries(this.form_dynamic?.form_group.controls ?? []).map(([key, value]:[string, any])=>{
+      value.setValue(data[key])
+    });
+
+    this.scrollTo('toltipo-info');
+    this.id_update = data.id;
+    this.state_edith = true;
+  }
+
+  public delete():void{
+    this._globalService.post_service('', {}).subscribe((response:any) =>{
+      if(response.successful){
+        
+      }
+    });
+  }
 
   ngOnInit(): void {
     this.inputs = [
@@ -30,12 +73,20 @@ export class HerramientasComponent implements OnInit {
           {value: null, name: 'nombre_herramienta', icon: 'cil-baseball', label: 'Herramienta', attributes: {type: 'text'}},
           {value: null, name: 'referencia', icon: 'cil-barcode', label: 'Referencia', attributes: {type: 'text'}},
           {value: null, name: 'marca', icon: 'cil-barcode', label: 'Marca', attributes: {type: 'text'}},
-          {value: null, name: 'estado', icon: 'cil-notes', label: 'Estado', attributes: {type: 'text'}},
+          {value: null, name: 'estado', icon: 'cil-notes', label: 'Estado', attributes: {type: 'text', list: 'datalist_estados'}},
           {value: null, name: 'codigo', icon: 'cil-notes', label: 'Código', attributes: {type: 'text'}},
         ]
       },
     ];
 
+    this._globalService.get_service('/herramienta/lista_herramientas').subscribe((response:any)=>{
+      if(response.successful){
+        this.datatableHerramientas?.renderData?.next(response.data);
+      }
+      this.loading = false;
+    })
+
+    // setTimeout(() => {
     // let response = {
     //   "successful": true,
     //   "data": [
@@ -119,16 +170,8 @@ export class HerramientasComponent implements OnInit {
     //       }
     //   ]
     // };
-
-    // setTimeout(() => {
-      this._globalService.get_service('/herramienta/lista_herramientas').subscribe((response:any)=>{
-        if(response.successful){
-          this.datatableHerramientas?.renderData?.next(response.data);
-          console.log(response.data);
-        }
-        this.loading = false;
-      })
-    // }, 1000);
-
+    //   this.datatableHerramientas?.renderData?.next(response.data);
+    //   this.loading = false;
+    // }, 500);
   }
 }

@@ -34,5 +34,11 @@ export class DatatableComponent implements OnInit{
 
   ngOnInit(): void {
     // this.renderData.next(this.data);
+    this.renderData.subscribe(()=> {
+      document.querySelectorAll('#datatable-body').forEach((value)=>{
+        value?.classList.add('animation-datatable');
+        setTimeout(() => {value?.classList.remove('animation-datatable')}, 2000);
+      })
+    })
   }
 }

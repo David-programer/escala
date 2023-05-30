@@ -24,9 +24,7 @@ export class InventarioComponent implements OnInit {
 
   public createUpdateInventario(data:any):void{
     this._globalService.post_service('/inventario_material/insert_inventario_material', {...data, id: null}).subscribe((response:any)=>{
-      if(response.successful){
-        
-      }
+      if(response.successful){}
       console.log(response);
     })
   }
@@ -78,7 +76,7 @@ export class InventarioComponent implements OnInit {
         if(response.successful) this.list_unidades = response.data;
         this.close_loading();
       },
-      error: ()=>{}
+      error: ()=> this.close_loading()
     });
 
     this._globalService.get_service('/inventario_material/lista_inventario_material?id=').subscribe({
@@ -90,5 +88,71 @@ export class InventarioComponent implements OnInit {
       },
       error: ()=>{}
     });
+
+    // setTimeout(() => {
+    //   let response = {
+    //     "successful": true,
+    //     "data": [
+    //         {
+    //             "id": 1,
+    //             "nombre_material": "puntillas 1 pulgada",
+    //             "cantidad": 94,
+    //             "valor_unidad": 110,
+    //             "descripccion": "nada",
+    //             "id_unidad": 1,
+    //             "createdAt": null,
+    //             "updatedAt": "2023-04-24 02:39:49.085 +00:00",
+    //             "unidades": "Unidades"
+    //         },
+    //         {
+    //             "id": 2,
+    //             "nombre_material": "cable",
+    //             "cantidad": 1,
+    //             "valor_unidad": 200000.5,
+    //             "descripccion": "nada 2",
+    //             "id_unidad": "2",
+    //             "createdAt": "2023-04-08 03:08:29.780 +00:00",
+    //             "updatedAt": "2023-04-08 03:08:47.753 +00:00",
+    //             "unidades": "Metros"
+    //         },
+    //         {
+    //             "id": 3,
+    //             "nombre_material": "cemente",
+    //             "cantidad": 89,
+    //             "valor_unidad": 50000,
+    //             "descripccion": "nada 3",
+    //             "id_unidad": 1,
+    //             "createdAt": null,
+    //             "updatedAt": "2023-04-24 02:39:49.096 +00:00",
+    //             "unidades": "Unidades"
+    //         },
+    //         {
+    //             "id": 4,
+    //             "nombre_material": "cable 2 pulgada",
+    //             "cantidad": 1,
+    //             "valor_unidad": 200000.5,
+    //             "descripccion": "",
+    //             "id_unidad": "2",
+    //             "createdAt": "2023-04-22 17:41:21.191 +00:00",
+    //             "updatedAt": "2023-04-22 17:43:55.100 +00:00",
+    //             "unidades": "Metros"
+    //         },
+    //         {
+    //             "id": 5,
+    //             "nombre_material": "empanadas ",
+    //             "cantidad": 50,
+    //             "valor_unidad": 5000,
+    //             "descripccion": "mucha hambre",
+    //             "id_unidad": "1",
+    //             "createdAt": "2023-05-07 01:02:46.822 +00:00",
+    //             "updatedAt": "2023-05-07 01:02:46.822 +00:00",
+    //             "unidades": "Unidades"
+    //         }
+    //     ]
+    //   }
+
+    //   this.datatableInventario?.renderData?.next(response.data);
+    //   this.close_loading();
+    // }, 500);
   }
 }

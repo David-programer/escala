@@ -21,7 +21,7 @@ const createWindow = ()=>{
 
     if(serve){
         require('electron-reloader')(module);
-        appWin.loadURL('http://localhost:4200');
+        appWin.loadURL('http://localhost:4200/');
     }else{
         appWin.loadURL(`file://${__dirname}/dist/index.html`);
     }

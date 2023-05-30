@@ -1,22 +1,31 @@
 <div>
-    <!-- <datalist id="datalist_unidades">
-        <option *ngFor="let unidad of list_unidades" value="{{unidad.unidades}}">
-    </datalist> -->
+    <div class="flex">
+        <span [ngClass]="!state_edith ? 'bg-orange-600' : 'bg-red-600'" class="ml-auto p-3 rounded text-sm text-white" id="toltipo-info">
+            {{!state_edith ? 'CREAR' : 'EDITAR'}}
+        </span>
+    </div>
+
+    <datalist id="datalist_estados">
+        <option value="Nuevo">
+        <option value="Bueno">
+        <option value="Regular">
+        <option value="Dado de baja">
+    </datalist>
 
     <app-form-dynamic
         #form_dynamic
         [inputs]="inputs"
-        (reset)="this.state_edith = true"
+        (reset)="this.state_edith = false"
+        (submitEvent)="create_or_update($event);"
     ></app-form-dynamic>
-        <!-- (submitEvent)="createUpdateInventario($event)" -->
 
     <app-datatable
         #datatableHerramientas
-        [buttons]="[{icon: 'cil-trash', text: '', id: 1}, {icon: 'cil-pencil', text: '', id: 2}]"
+        [buttons]="[{icon: 'cil-pencil', text: '', id: 2}]"
         [keys]="['nombre_herramienta','referencia','marca','estado','codigo']"
         [titles]="['Herramienta', 'Referencia', 'Marca', 'Estado', 'codigo', 'opciones']"
+        (clickEmit)="load_update($event.data)"
     ></app-datatable>
-        <!-- (clickEmit)="$event.button.id == 2 ? handlerEdith($event.data) : null" -->
-    </div>
+</div>
     
 <app-loading *ngIf="loading"></app-loading>
