@@ -14,6 +14,7 @@ export class UsersComponent implements OnInit{
 
   public inputs:any[] = [];
   public state_edith = false;
+  public id_update:string = '';
   public loading:boolean = true;
 
   @ViewChild('form_dynamic') form_dynamic:FormDynamicComponent | null = null
@@ -34,7 +35,7 @@ export class UsersComponent implements OnInit{
   public createUpdateUser($event:any):void{
     this._globalService.post_service('/user/insert_user', $event).subscribe({
       next: (response)=>{
-
+        console.log(response)
       },
       error: (error)=>{}
     });
@@ -77,22 +78,40 @@ export class UsersComponent implements OnInit{
       }
     ];
 
-    this._globalService.get_service('/user/lista_users?id=').subscribe({
-      next: (response:any)=>{
-        if(response.successful){
-          this.datatableUsers?.renderData?.next(
-            response.data.map((item:any) => {
-              item.activo = Boolean(item.activo) ? 'Sí' : 'No';
-              return item
-            })
-          );
-        }
-        this.loading = false;
-      },
-      error: (error)=>{
-        this.datatableUsers?.renderData?.next([])
-        this.loading = false;
+    // this._globalService.get_service('/user/lista_users?id=').subscribe({
+    //   next: (response:any)=>{
+    //     if(response.successful){
+    //       this.datatableUsers?.renderData?.next(
+    //         response.data.map((item:any) => {
+    //           item.activo = Boolean(item.activo) ? 'Sí' : 'No';
+    //           return item
+    //         })
+    //       );
+    //     }
+    //     this.loading = false;
+    //   },
+    //   error: (error)=>{
+    //     this.datatableUsers?.renderData?.next([])
+    //     this.loading = false;
+    //   }
+    // })
+
+    setTimeout(() => {
+      let response = {
+        "successful": true,
+        "data": []
       }
-    })
+
+      if(response.successful){
+        this.datatableUsers?.renderData?.next(
+          response.data.map((item:any) => {
+            item.activo = Boolean(item.activo) ? 'Sí' : 'No';
+            return item
+          })
+        );
+      }
+      
+      this.loading = false;
+    }, 500);
   }
 }
