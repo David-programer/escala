@@ -1,0 +1,44 @@
+<div>
+    <div class="flex">
+        <span [ngClass]="!state_edith ? 'bg-orange-600' : 'bg-red-600'" class="ml-auto p-2 rounded-lg text-sm text-white font-semibold" id="toltipo-info">
+            {{!state_edith ? 'CREAR' : 'EDITAR'}}
+        </span>
+    </div>
+
+    <datalist id="datalist_estados">
+        <option value="Nuevo">
+        <option value="Bueno">
+        <option value="Regular">
+        <option value="Dado de baja">
+    </datalist>
+
+    <datalist id="datalist_user">
+        <option *ngFor="let user of list_users" value="{{user.nombre_completo | uppercase}}">
+    </datalist>
+
+    <app-form-dynamic
+        #form_dynamic
+        [inputs]="inputs"
+        (reset)="this.state_edith = false"
+        (submitEvent)="create_or_update($event);"
+    ></app-form-dynamic>
+
+    <app-datatable
+        #datatableHerramientas
+        [buttons]="[{icon: 'cil-pencil', text: '', id: 2}, {icon: 'cil-user-follow', text: '', id: 1}]"
+        [keys]="['nombre_herramienta','referencia','marca','estado','codigo']"
+        [titles]="['Herramienta', 'Referencia', 'Marca', 'Estado', 'codigo', 'opciones']"
+        (clickEmit)="$event.id == 2 ? load_update($event.data) : open_modal($event.data)"
+    ></app-datatable>
+</div>
+
+<app-modal #modal_herramientas>
+    <app-form-dynamic
+        #form_dynamic_prestamos
+        [inputs]="inputs_prestamos"
+        (reset)="close_modal()"
+        (submitEvent)="create_prestamo($event);"
+    ></app-form-dynamic>
+</app-modal>
+
+<app-loading *ngIf="loading"></app-loading>
