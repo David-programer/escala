@@ -16,6 +16,11 @@
         <option *ngFor="let user of list_users" value="{{user.nombre_completo | uppercase}}">
     </datalist>
 
+    <datalist id="datalist_tipo_prestamo">
+        <option value="Prestamo">
+        <option value="Devolucion">
+    </datalist>
+
     <app-form-dynamic
         #form_dynamic
         [inputs]="inputs"
@@ -33,12 +38,26 @@
 </div>
 
 <app-modal #modal_herramientas>
-    <app-form-dynamic
+    <div class="bg-white">
+        <nav class="flex flex-col sm:flex-row">
+            <button class="text-sm py-3 px-3 block hover:text-orange-500 focus:outline-none text-orange-500 border-b-2 font-medium border-orange-500">FILTRAR</button>
+            <button class="text-gray-600 py-3 px-3 block hover:text-orange-500 focus:outline-none">CREAR</button>
+        </nav>
+    </div>
+
+    <app-datatable
+        #datatablePrestamos
+        [buttons]="[{icon: 'cil-pencil', text: '', id: 2}]"
+        [keys]="['tipo_prestamo', 'nombre_completo', 'observacion', 'fec_prestamo']"
+        [titles]="['Tipo', 'prestatario', 'observación', 'fecha', 'opciones']"
+    ></app-datatable>
+
+    <!-- <app-form-dynamic
         #form_dynamic_prestamos
         [inputs]="inputs_prestamos"
         (reset)="close_modal()"
         (submitEvent)="create_prestamo($event);"
-    ></app-form-dynamic>
+    ></app-form-dynamic> -->
 </app-modal>
 
 <app-loading *ngIf="loading"></app-loading>

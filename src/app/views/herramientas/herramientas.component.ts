@@ -15,8 +15,8 @@ export class HerramientasComponent implements OnInit {
   constructor(private _globalService: GlobalService){}
 
   public inputs:any[] = [];
+  public data_modal:any = {};
   public list_users:any[] = [];
-  public data_modal:any[] = [];
   public id_update:string = '';
   public loading:boolean = true;
   public state_edith:boolean = false;
@@ -25,6 +25,7 @@ export class HerramientasComponent implements OnInit {
 
   @ViewChild('form_dynamic') form_dynamic:FormDynamicComponent | null = null;
   @ViewChild('modal_herramientas') modal_herramientas:ModalComponent | null = null;
+  @ViewChild('datatablePrestamos') datatablePrestamos:DatatableComponent | null = null;
   @ViewChild('datatableHerramientas') datatableHerramientas:DatatableComponent | null = null;
 
   public scrollTo(id:string){
@@ -55,11 +56,11 @@ export class HerramientasComponent implements OnInit {
     this.loading = true;
 
     let body:any = {
+      id: '',
       ...data,
+      id_herramienta: this.data_modal?.id,
       id_user: this.list_users.find(item => item.nombre_completo.toUpperCase() == data.id_user)?.id
     }
-
-    console.log(body);
 
     this._globalService.post_service('/herramienta/insert_prestamo', body).subscribe({
       next: (response:any)=>{
@@ -93,6 +94,7 @@ export class HerramientasComponent implements OnInit {
   public open_modal(data:any){
     this.data_modal = data;
     this.modal_herramientas?.open_modal();
+    this.datatablePrestamos?.renderData.next(data.prestamos)
   }
 
   public close_modal(){
@@ -120,7 +122,7 @@ export class HerramientasComponent implements OnInit {
         description: 'Datos básicos del prestamo',
         inputs: [
           {value: null, name: 'id_user', icon: 'cil-user', label: 'Colaborador (prestatario)', attributes: {type: 'text', list: 'datalist_user'}},
-          {value: null, name: 'tipo_prestamo', icon: 'cil-color-border', label: 'Tipo', attributes: {type: 'text'}},
+          {value: null, name: 'tipo_prestamo', icon: 'cil-color-border', label: 'Tipo', attributes: {type: 'text', list: 'datalist_tipo_prestamo'}},
           {value: null, name: 'observacion', icon: 'cil-notes', label: 'Observación', attributes: {type: 'text'}},
           {value: null, name: 'fec_prestamo', icon: 'cil-calendar', label: 'Fecha del prestamo', attributes: {type: 'date'}},
         ]
