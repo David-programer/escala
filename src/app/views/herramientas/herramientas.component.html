@@ -33,31 +33,32 @@
         [buttons]="[{icon: 'cil-pencil', text: '', id: 2}, {icon: 'cil-user-follow', text: '', id: 1}]"
         [keys]="['nombre_herramienta','referencia','marca','estado','codigo']"
         [titles]="['Herramienta', 'Referencia', 'Marca', 'Estado', 'codigo', 'opciones']"
-        (clickEmit)="$event.id == 2 ? load_update($event.data) : open_modal($event.data)"
+        (clickEmit)="$event.button.id == 2 ? load_update($event.data) : open_modal($event.data)"
     ></app-datatable>
 </div>
 
 <app-modal #modal_herramientas>
-    <div class="bg-white">
-        <nav class="flex flex-col sm:flex-row">
-            <button class="text-sm py-3 px-3 block hover:text-orange-500 focus:outline-none text-orange-500 border-b-2 font-medium border-orange-500">FILTRAR</button>
-            <button class="text-gray-600 py-3 px-3 block hover:text-orange-500 focus:outline-none">CREAR</button>
-        </nav>
-    </div>
+    <app-tabset
+        #tabsetHerramientas
+        [tabs]="['FILTRAR', 'CREAR']"
+    >
+        <app-datatable
+            id="FILTRAR"
+            #datatablePrestamos
+            [buttons]="[{icon: 'cil-pencil', text: '', id: 2}]"
+            [keys]="['tipo_prestamo', 'nombre_completo', 'observacion', 'fec_prestamo']"
+            [titles]="['Tipo', 'prestatario', 'observación', 'fecha', 'opciones']"
+            (clickEmit)="load_update_prestamo($event)"
+        ></app-datatable>
 
-    <app-datatable
-        #datatablePrestamos
-        [buttons]="[{icon: 'cil-pencil', text: '', id: 2}]"
-        [keys]="['tipo_prestamo', 'nombre_completo', 'observacion', 'fec_prestamo']"
-        [titles]="['Tipo', 'prestatario', 'observación', 'fecha', 'opciones']"
-    ></app-datatable>
-
-    <!-- <app-form-dynamic
-        #form_dynamic_prestamos
-        [inputs]="inputs_prestamos"
-        (reset)="close_modal()"
-        (submitEvent)="create_prestamo($event);"
-    ></app-form-dynamic> -->
+        <app-form-dynamic
+            id="CREAR"
+            #form_dynamic_prestamos
+            [inputs]="inputs_prestamos"
+            (reset)="close_modal()"
+            (submitEvent)="create_prestamo($event);"
+        ></app-form-dynamic>
+    </app-tabset>
 </app-modal>
 
 <app-loading *ngIf="loading"></app-loading>

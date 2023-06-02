@@ -3,6 +3,8 @@ import { GlobalService } from 'src/app/services/global.service';
 import { DatatableComponent } from 'src/app/components/datatable/datatable.component';
 import { FormDynamicComponent } from 'src/app/components/form-dynamic/form-dynamic.component';
 import { ModalComponent } from 'src/app/components/modal/modal.component';
+import { TabsetComponent } from 'src/app/components/tabset/tabset.component';
+import { FormControl, Validators } from '@angular/forms';
 
 @Component({
   selector: 'app-herramientas',
@@ -15,6 +17,7 @@ export class HerramientasComponent implements OnInit {
   constructor(private _globalService: GlobalService){}
 
   public inputs:any[] = [];
+  public tabset:string = 'FILTRAR';
   public data_modal:any = {};
   public list_users:any[] = [];
   public id_update:string = '';
@@ -25,8 +28,10 @@ export class HerramientasComponent implements OnInit {
 
   @ViewChild('form_dynamic') form_dynamic:FormDynamicComponent | null = null;
   @ViewChild('modal_herramientas') modal_herramientas:ModalComponent | null = null;
+  @ViewChild('tabsetHerramientas') tabsetHerramientas:TabsetComponent | null = null;
   @ViewChild('datatablePrestamos') datatablePrestamos:DatatableComponent | null = null;
   @ViewChild('datatableHerramientas') datatableHerramientas:DatatableComponent | null = null;
+  @ViewChild('form_dynamic_prestamos') form_dynamic_prestamos:FormDynamicComponent | null = null;
 
   public scrollTo(id:string){
     setTimeout(() => {
@@ -64,9 +69,24 @@ export class HerramientasComponent implements OnInit {
 
     this._globalService.post_service('/herramienta/insert_prestamo', body).subscribe({
       next: (response:any)=>{
-        console.log(response)
         if(response.successful){
-
+          let formulario:any = this.form_dynamic_prestamos?.form_group.controls;
+          if(formulario['id']){
+            let new_data:any[] = this.datatablePrestamos?.renderData.getValue().map(item => response.data[0].id == item.id ?  response.data[0] : item) ?? [];
+            this.datatablePrestamos?.renderData.next(new_data);
+            this.datatableHerramientas?.renderData.next(
+              this.datatableHerramientas?.renderData.getValue().map(item => {
+                if(item.id == this.data_modal.id) item.prestamos = new_data;
+                return item
+              })
+            );
+          } else {
+            this.data_modal.prestamos.unshift(response.data[0]);
+            this.datatableHerramientas?.renderData.next(this.datatableHerramientas?.renderData.getValue().map(item =>item.id ==  this.data_modal.id ? this.data_modal : item));
+          }
+          
+          this.tabsetHerramientas?.handler_change_tab('FILTRAR');
+          this.form_dynamic_prestamos?.form_group.reset();
         }
         this.loading = false;
       }
@@ -93,8 +113,19 @@ export class HerramientasComponent implements OnInit {
 
   public open_modal(data:any){
     this.data_modal = data;
+    this.state_edith = false;
     this.modal_herramientas?.open_modal();
-    this.datatablePrestamos?.renderData.next(data.prestamos)
+    this.datatablePrestamos?.renderData.next(data.prestamos);
+    this.form_dynamic?.form_group.reset();
+  }
+
+  public load_update_prestamo({data}:any):void{
+    this.tabsetHerramientas?.handler_change_tab('CREAR');
+    let formulario:any = this.form_dynamic_prestamos?.form_group.controls;
+    Object.keys(formulario).map((key:string) => formulario[key].setValue(data[key]));
+    this.form_dynamic_prestamos?.form_group.setControl('id', new FormControl(data.id, Validators.required));
+
+    formulario['id_user'].setValue(this.list_users.find(item => item.id == data.id_user)?.nombre_completo.toUpperCase());
   }
 
   public close_modal(){
@@ -129,12 +160,12 @@ export class HerramientasComponent implements OnInit {
       },
     ];
 
-    // this._globalService.get_service('/herramienta/lista_herramientas').subscribe((response:any)=>{
-    //   if(response.successful){
-    //     this.datatableHerramientas?.renderData?.next(response.data);
-    //   }
-    //   this.loading = false;
-    // })
+    this._globalService.get_service('/herramienta/lista_herramientas').subscribe((response:any)=>{
+      if(response.successful){
+        this.datatableHerramientas?.renderData?.next(response.data);
+      }
+      this.loading = false;
+    })
 
     this._globalService.get_service('/user/lista_users?id=').subscribe({
       next: (response:any)=>{
@@ -143,92 +174,92 @@ export class HerramientasComponent implements OnInit {
       }
     })
 
-    setTimeout(() => {
-    let response = {
-      "successful": true,
-      "data": [
-          {
-              "id": 1,
-              "nombre_herramienta": "Martillo",
-              "referencia": "prueba",
-              "marca": "gato",
-              "estado": "Nuevo",
-              "codigo": "MA_001",
-              "createdAt": null,
-              "updatedAt": null,
-              "prestamos": [
-                  {
-                      "id": 4,
-                      "id_herramienta": 1,
-                      "id_user": 2,
-                      "tipo_prestamo": "Devolucion",
-                      "observacion": "nada v3",
-                      "fec_prestamo": "2023-01-03 00:00:00.000 +00:00",
-                      "createdAt": "2023-04-22 17:08:32.205 +00:00",
-                      "updatedAt": "2023-04-22 17:21:50.792 +00:00",
-                      "nombre_completo": "adasfddgfadgf"
-                  },
-                  {
-                      "id": 3,
-                      "id_herramienta": 1,
-                      "id_user": 2,
-                      "tipo_prestamo": "Prestamo",
-                      "observacion": "nada v2",
-                      "fec_prestamo": "2023-01-03 00:00:00.000 +00:00",
-                      "createdAt": "2023-04-17 17:57:03.805 +00:00",
-                      "updatedAt": "2023-04-17 17:57:21.504 +00:00",
-                      "nombre_completo": "adasfddgfadgf"
-                  },
-                  {
-                      "id": 2,
-                      "id_herramienta": 1,
-                      "id_user": 2,
-                      "tipo_prestamo": "Devolicion",
-                      "observacion": "ninguna",
-                      "fec_prestamo": "2023-03-03",
-                      "createdAt": null,
-                      "updatedAt": null,
-                      "nombre_completo": "adasfddgfadgf"
-                  },
-                  {
-                      "id": 1,
-                      "id_herramienta": 1,
-                      "id_user": 1,
-                      "tipo_prestamo": "Prestamo",
-                      "observacion": "ninguna",
-                      "fec_prestamo": "2023-02-22",
-                      "createdAt": null,
-                      "updatedAt": null,
-                      "nombre_completo": "adasfddgfadgf"
-                  }
-              ]
-          },
-          {
-              "id": 2,
-              "nombre_herramienta": "taladro",
-              "referencia": "",
-              "marca": "",
-              "estado": "Nuevo",
-              "codigo": "CE_001",
-              "createdAt": "2023-04-17 05:20:51.261 +00:00",
-              "updatedAt": "2023-04-17 05:21:27.758 +00:00",
-              "prestamos": []
-          },
-          {
-              "id": 3,
-              "nombre_herramienta": "taladro3",
-              "referencia": "fer0002",
-              "marca": "waller",
-              "estado": "Nuevo",
-              "codigo": "CE_003",
-              "createdAt": "2023-04-22 16:21:01.454 +00:00",
-              "updatedAt": "2023-04-22 16:27:48.023 +00:00",
-              "prestamos": []
-          }
-      ]
-    };
-      this.datatableHerramientas?.renderData?.next(response.data);
-      this.loading = false;
-    }, 500);
+    // setTimeout(() => {
+    // let response = {
+    //   "successful": true,
+    //   "data": [
+    //       {
+    //           "id": 1,
+    //           "nombre_herramienta": "Martillo",
+    //           "referencia": "prueba",
+    //           "marca": "gato",
+    //           "estado": "Nuevo",
+    //           "codigo": "MA_001",
+    //           "createdAt": null,
+    //           "updatedAt": null,
+    //           "prestamos": [
+    //               {
+    //                   "id": 4,
+    //                   "id_herramienta": 1,
+    //                   "id_user": 2,
+    //                   "tipo_prestamo": "Devolucion",
+    //                   "observacion": "nada v3",
+    //                   "fec_prestamo": "2023-01-03 00:00:00.000 +00:00",
+    //                   "createdAt": "2023-04-22 17:08:32.205 +00:00",
+    //                   "updatedAt": "2023-04-22 17:21:50.792 +00:00",
+    //                   "nombre_completo": "adasfddgfadgf"
+    //               },
+    //               {
+    //                   "id": 3,
+    //                   "id_herramienta": 1,
+    //                   "id_user": 2,
+    //                   "tipo_prestamo": "Prestamo",
+    //                   "observacion": "nada v2",
+    //                   "fec_prestamo": "2023-01-03 00:00:00.000 +00:00",
+    //                   "createdAt": "2023-04-17 17:57:03.805 +00:00",
+    //                   "updatedAt": "2023-04-17 17:57:21.504 +00:00",
+    //                   "nombre_completo": "adasfddgfadgf"
+    //               },
+    //               {
+    //                   "id": 2,
+    //                   "id_herramienta": 1,
+    //                   "id_user": 2,
+    //                   "tipo_prestamo": "Devolicion",
+    //                   "observacion": "ninguna",
+    //                   "fec_prestamo": "2023-03-03",
+    //                   "createdAt": null,
+    //                   "updatedAt": null,
+    //                   "nombre_completo": "adasfddgfadgf"
+    //               },
+    //               {
+    //                   "id": 1,
+    //                   "id_herramienta": 1,
+    //                   "id_user": 1,
+    //                   "tipo_prestamo": "Prestamo",
+    //                   "observacion": "ninguna",
+    //                   "fec_prestamo": "2023-02-22",
+    //                   "createdAt": null,
+    //                   "updatedAt": null,
+    //                   "nombre_completo": "adasfddgfadgf"
+    //               }
+    //           ]
+    //       },
+    //       {
+    //           "id": 2,
+    //           "nombre_herramienta": "taladro",
+    //           "referencia": "",
+    //           "marca": "",
+    //           "estado": "Nuevo",
+    //           "codigo": "CE_001",
+    //           "createdAt": "2023-04-17 05:20:51.261 +00:00",
+    //           "updatedAt": "2023-04-17 05:21:27.758 +00:00",
+    //           "prestamos": []
+    //       },
+    //       {
+    //           "id": 3,
+    //           "nombre_herramienta": "taladro3",
+    //           "referencia": "fer0002",
+    //           "marca": "waller",
+    //           "estado": "Nuevo",
+    //           "codigo": "CE_003",
+    //           "createdAt": "2023-04-22 16:21:01.454 +00:00",
+    //           "updatedAt": "2023-04-22 16:27:48.023 +00:00",
+    //           "prestamos": []
+    //       }
+    //   ]
+    // };
+    //   this.datatableHerramientas?.renderData?.next(response.data);
+    //   this.loading = false;
+    // }, 500);
   }
 }

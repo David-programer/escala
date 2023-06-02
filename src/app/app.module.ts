@@ -19,6 +19,7 @@ import { InventarioComponent } from './views/inventario/inventario.component';
 import { CreateComponent } from './views/proyects/create/create.component';
 import { HerramientasComponent } from './views/herramientas/herramientas.component';
 import { ModalComponent } from './components/modal/modal.component';
+import { TabsetComponent } from './components/tabset/tabset.component';
 
 
 @NgModule({
@@ -36,6 +37,7 @@ import { ModalComponent } from './components/modal/modal.component';
     CreateComponent,
     HerramientasComponent,
     ModalComponent,
+    TabsetComponent,
   ],
   imports: [
     BrowserModule,
