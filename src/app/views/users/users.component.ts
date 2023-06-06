@@ -16,6 +16,7 @@ export class UsersComponent implements OnInit{
   public inputs:any[] = [];
   public state_edith = false;
   public loading:boolean = true;
+  public alert:string|null = null;
   public datalistRoles:any[] = [];
   public message_server:string = '';
   public id_update:string|null = '';
@@ -48,17 +49,27 @@ export class UsersComponent implements OnInit{
 
     this._globalService.post_service('/user/insert_user', {...$event, id: this.id_update, id_rol: this.datalistRoles.find(item => item.rol_name.toUpperCase() == $event.id_rol.toUpperCase())?.id, activo: Number(activo.checked)}).subscribe({
       next: (response:any)=>{
-        console.log(response);
-
         if(response.successful){
           this.id_update = '';
           this.form_dynamic?.form_group.reset();
 
           if(this.state_edith){
             this.datatableUsers?.renderData.next(
-              this.datatableUsers?.renderData.getValue().map((item:any)=>item.id == response.data.id ? response.data : item)
+              this.datatableUsers?.renderData.getValue().map((item:any)=>{
+                if(item.id == response.data.id){
+                  let result =  {...response.data, activo: response.data.activo ? 'Sí' : 'No'};
+                  return result;
+                }else return item
+              })
             );
-          }else this.datatableUsers?.renderData.next([response.data[0], ...this.datatableUsers?.renderData.getValue()])
+          }else{
+            response.data[0].activo = response.data[0].activo ? 'Sí' : 'No';
+            this.datatableUsers?.renderData.next([response.data[0], ...this.datatableUsers?.renderData.getValue()]);
+          } 
+          
+          this.alert = '!Se realizó la acción correctamente!'
+          setTimeout(() => {this.alert = null}, 10000);
+          this.state_edith = false;
         }else this.open_modal_error(response);
 
         this.loading = false;
@@ -89,10 +100,10 @@ export class UsersComponent implements OnInit{
         title: 'DATOS BÁSICOS',
         description: 'Información personal del usuario',
         inputs: [
-          {value: null, name: 'nombre_completo', icon: 'cil-user', label: 'Nombre', attributes: {type: 'text'}},
-          {value: null, name: 'cedula', icon: 'cil-barcode', label: 'Cédula', attributes: {type: 'number'}},
-          {value: null, name: 'telefono', icon: 'cil-phone', label: 'Teléfono', attributes: {type: 'number'}},
-          {value: null, name: 'direccion', icon: 'cil-location-pin', label: 'Dirección', attributes: {type: 'text'}},
+          {value: null, name: 'nombre_completo', icon: 'cil-user', label: 'Nombre', validators: ['required'], attributes: {type: 'text'}},
+          {value: null, name: 'cedula', icon: 'cil-barcode', label: 'Cédula', validators: ['required'], attributes: {type: 'number'}},
+          {value: null, name: 'telefono', icon: 'cil-phone', label: 'Teléfono', validators: ['required'], attributes: {type: 'number'}},
+          {value: null, name: 'direccion', icon: 'cil-location-pin', label: 'Dirección', validators: ['required'], attributes: {type: 'text'}},
         ]
       },
       {
@@ -101,7 +112,7 @@ export class UsersComponent implements OnInit{
         inputs: [
           {value: null, name: 'correo',   icon: 'cil-envelope-open', label: 'Correo', validators: ['required', 'email'], attributes: {type: 'text', required: true}},
           {value: null, name: 'pass', icon: 'cil-lock-locked', label: 'Contraseña', attributes: {type: 'password'}},
-          {value: null, name: 'id_rol', icon: 'cil-user', label: 'Rol', attributes: {type: 'text', list: 'datalistRoles'}},
+          {value: null, name: 'id_rol', icon: 'cil-user', label: 'Rol', attributes: {type: 'text', list: 'datalistRoles'}, validators: ['required']},
           {value: null, name: 'activo', icon: 'cil-user', label: 'activo', attributes: {type: 'checkbox'}},
         ]
       }

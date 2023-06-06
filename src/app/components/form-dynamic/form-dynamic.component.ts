@@ -15,13 +15,28 @@ export class FormDynamicComponent implements OnInit {
   @Output() reset = new EventEmitter<any>();
 
   public submit():void{
-    if(this.form_group.valid) this.submitEvent.emit(this.form_group.value);
-    else{
+    if(this.form_group.valid) {
+      this.submitEvent.emit(this.form_group.value);
+      Object.keys(this.form_group.controls)?.forEach((key: string) => {
+        let INPUT = document.getElementById(key); INPUT?.classList.remove('invalid'); INPUT?.classList.remove('valid');
+      });
+    } else{
       Object.entries(this.form_group.controls)?.forEach(([key, value]: [string, any]) => {
-        if(value.status == "INVALID") document.getElementById(key)?.classList.add('');
+        let INPUT = document.getElementById(key);
+        if(value.status == "INVALID"){INPUT?.classList.add('invalid'); INPUT?.classList.remove('valid')}
+        else {INPUT?.classList.add('valid'); INPUT?.classList.remove('invalid')}
       })
-      // Object.entries(this.form_group.controls)
     }
+  }
+
+  public validate_input(id:string){
+    let input = document.getElementById(id);
+    let inputs:any = this.form_group.controls;
+    
+    if(inputs[id].status == "INVALID"){
+      input?.classList.add('invalid'); 
+      input?.classList.remove('valid');
+    }else input?.classList.remove('invalid')
   }
 
   public reset_values():void{
@@ -30,6 +45,10 @@ export class FormDynamicComponent implements OnInit {
 
     this.form_group.setValue(values);
     this.reset.emit();
+
+    Object.keys(this.form_group.controls)?.forEach((key: string) => {
+      let INPUT = document.getElementById(key); INPUT?.classList.remove('invalid'); INPUT?.classList.remove('valid');
+    });
   }
 
   ngOnInit(): void {
