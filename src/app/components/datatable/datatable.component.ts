@@ -10,16 +10,16 @@ import { BehaviorSubject } from 'rxjs';
 export class DatatableComponent implements OnInit{
 
   
-  @Input() data:any[] = [];
+  private data:any[] = [];
   @Input() buttons:any[] = [];
   @Input() keys:any[string] = [];
   public search_input:string = '';
   @Input() titles:any[string] = [];
+  private load_component:boolean = false;
   @Output() clickEmit = new EventEmitter<any>();
   public renderData:BehaviorSubject<any[]> = new BehaviorSubject<any[]>([]);
 
-  public output_click(event:any):void
-  {
+  public output_click(event:any):void{
     this.clickEmit.emit(event);
   }
 
@@ -33,10 +33,9 @@ export class DatatableComponent implements OnInit{
 
   ngOnInit(): void {
     // this.renderData.next(this.data);
-    this.data = this.renderData.getValue();
 
     this.renderData.subscribe((value:any)=> {
-      console.log(value);
+      if(!this.load_component) {this.data = value; this.load_component = true};
       document.querySelectorAll('#datatable-body').forEach((value)=>{
         value?.classList.add('animation-datatable');
         setTimeout(() => {value?.classList.remove('animation-datatable')}, 2000);
