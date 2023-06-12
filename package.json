@@ -5,8 +5,8 @@
   "scripts": {
     "ng": "ng",
     "test": "ng test",
-    "start": "ng serve --proxy-config proxy.conf.json",
     "build": "ng build",
+    "start": "ng build && electron .",
     "electron:serve": "electron . --serve",
     "dev": "ng serve --watch && electron .",
     "pro:windows": "electron-builder --win",

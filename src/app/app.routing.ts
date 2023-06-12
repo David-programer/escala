@@ -5,6 +5,9 @@ import { HomeComponent } from './views/home/home.component';
 import { LoginComponent } from './views/login/login.component';
 import { LayoutComponent } from './containers/layout/layout.component';
 import { UsersComponent } from './views/users/users.component';
+import { ProyectsComponent } from './views/proyects/proyects.component';
+import { InventarioComponent } from './views/inventario/inventario.component';
+import { HerramientasComponent } from './views/herramientas/herramientas.component';
 
 const routes: Routes = [
   { path: '', redirectTo: 'login', pathMatch: 'full'},
@@ -16,6 +19,9 @@ const routes: Routes = [
     children: [
       { path: 'home',component: HomeComponent, data: { title: 'Inicio' } },
       { path: 'users',component: UsersComponent, data: { title: 'Usuarios' } },
+      { path: 'proyects',component: ProyectsComponent, data: { title: 'Proyectos' } },
+      { path: 'inventario',component: InventarioComponent, data: { title: 'Inventario' } },
+      { path: 'herramientas',component: HerramientasComponent, data: { title: 'Herramientas' } },
      ]
   },
 ];

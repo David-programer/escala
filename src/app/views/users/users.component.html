@@ -1,17 +1,45 @@
 <div>
-    <div>
+    <datalist id="datalistRoles">
+        <option *ngFor="let rol of datalistRoles" value="{{rol.rol_name}}"></option>
+    </datalist>
 
-        <app-form-dynamic
-        
-        ></app-form-dynamic>
-
-        <app-datatable
-            [data]="data"
-            [keys]="['name', 'color', 'category', 'precio']"
-            [buttons]="[{icon: 'cil-home', text: '', id: 1}]"
-            [titles]="['Product name', 'Color', 'Category', 'Price', 'Edit']"
-        ></app-datatable>
+    <div *ngIf="alert" class="bg-white hover:bg-orange-100 hover:shadow-lg transition duration-150 ease-linear backdrop-blur-xl z-20 max-w-md absolute left-5 bottom-6 rounded-lg p-4 shadow">
+        <div class="relative">
+            <h1 class="text-sm text-slate-700 font-medium"><span class="cil-warning text-orange-700 mr-2"></span>{{alert}}</h1>
+            <span class="absolute grid place-content-center h-5 w-5 -left-6 -top-6">
+                <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-orange-400 opacity-75"></span>
+                <span class="relative inline-flex rounded-full h-4 w-4 bg-orange-500"></span>
+            </span>
+        </div>
     </div>
+
+    <div class="flex">
+        <span [ngClass]="!state_edith ? 'bg-orange-600' : 'bg-red-600'" class="ml-auto p-2 rounded-lg text-sm text-white font-semibold" id="toltipo-info">
+            {{!state_edith ? 'CREAR' : 'EDITAR'}}
+        </span>
+    </div>
+    
+    <app-form-dynamic
+        #form_dynamic
+        [inputs]="inputs"
+        (reset)="this.state_edith = false"
+        (submitEvent)="createUpdateUser($event)"
+    ></app-form-dynamic>
+
+    <br class="mt-3">
+
+    <app-datatable
+        #datatableUsers
+        (clickEmit)="handlerEdith($event)"
+        [keys]="['nombre_completo', 'cedula', 'correo', 'telefono', 'direccion', 'rol_name', 'activo']"
+        [buttons]="[{icon: 'cil-pencil', text: '', id: 2}]"
+        [titles]="['nombre', 'cédula', 'correo', 'teléfono', 'dirección', 'rol', 'activo', 'opciones']"
+    ></app-datatable>
 </div>
+
+<app-modal #modalUsers [size]="1">
+    <h3 class="font-semibold text-xl mb-2">Tenemos problemas al realizar la acción</h3>
+    <p><span class="mr-2 cil-notes text-xl"></span> {{message_server}}</p>
+</app-modal>
 
 <app-loading *ngIf="loading"></app-loading>

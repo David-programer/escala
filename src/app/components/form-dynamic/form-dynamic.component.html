@@ -1,10 +1,29 @@
-<form class="mt-8">
-    <div class="space-y-4">
-        <input type="text" placeholder="Correo" class="block text-sm py-1.5 px-4 rounded-lg w-full border outline-none" />
-        <input type="text" placeholder="Contraseña" class="block text-sm py-1.5 px-4 rounded-lg w-full border outline-none" />
-    </div>
-    
-    <div class="mt-4">
-        <button  class="mb-1.5 block w-full text-center px-2 btn-primary">Ingresar</button>
-    </div> 
-</form>
+<div class="space-y-4">
+    <form [formGroup]="form_group" (submit)="submit()">
+        <div *ngFor="let section of inputs">
+            <hr class="my-4">
+
+            <h2 class="m-0 font-medium" id="title-page">{{section.title}}</h2>
+            <small>{{section.description}}</small>
+
+            <div class="mt-6 grid sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
+                <div *ngFor="let input of section.inputs" class="relative">
+                    <label for="{{input.name}}" class="text-gray-700 text-sm hover:text-gray-400 cursor-pointer " ><span class="mr-1 {{input.icon}}"></span>{{input.label | uppercase}}</label>
+                    <input 
+                        #input_form
+                        id="{{input.name}}"
+                        [formControlName]="input.name"
+                        (change)="validate_input(input.name)"
+                        [ngClass]="{'w-full': input.attributes?.type != 'checkbox'}"
+                        class="block text-sm py-1.5 px-4 rounded-lg  border outline-none" 
+                    />
+                    <span *ngIf="input_form.classList.contains('invalid')" class="rounded-b-md rounded-l-md bg-red-600 text-white p-1 text-[.6rem] absolute -bottom-5 right-0"><span class="cil-warning mr-1"></span> ¡Incorrecto!</span>
+                </div>
+            </div>
+        </div>
+        <div class="mt-4 flex gap-4">
+            <span (click)="reset_values()" class="cursor-pointer ml-auto mb-1.5 block w-full text-center px-2 btn-outline-secondary">Cancelar</span>
+            <button type="submit" class="ml-auto mb-1.5 block w-full text-center px-2 btn-primary">ENVIAR</button>
+        </div> 
+    </form>        
+</div>

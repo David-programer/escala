@@ -11,6 +11,14 @@
     background-color: var(--main);
 }
 
+.btn{
+    @apply rounded-md py-1 uppercase text-sm
+}
+
 .btn-primary{
-    @apply text-white hover:bg-orange-400 rounded-md py-1.5 bg-primary
+    @apply text-white hover:bg-orange-400 btn bg-primary 
+}
+
+.btn-outline-secondary{
+    @apply text-gray-600 border border-gray-600 hover:bg-gray-600 hover:text-white btn
 }

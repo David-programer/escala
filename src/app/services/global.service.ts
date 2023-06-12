@@ -29,8 +29,9 @@ export class GlobalService {
         return this._http.get(`${this.url}${url}`, 
         // {
         //     headers: {
-        //         "Access-Control-Allow-Origin": "*",
-        //         "Sec-Fetch-Mode": "cors"
+        //     'Access-Control-Allow-Origin': '*',
+        //     'Access-Control-Allow-Methods': 'GET, POST, PUT, DELETE, OPTIONS',
+        //     'Access-Control-Allow-Headers': 'Content-Type, Authorization'
         //     }
         // }
         )
