@@ -12,12 +12,17 @@
     <app-form-dynamic
         #form_dynamic
         [inputs]="inputs"
+<<<<<<< HEAD
         (reset)="this.state_edith = true"
+=======
+        (reset)="state_edith = false; id_update = ''"
+>>>>>>> dbb364b1fecdf211d4f02f3e3074bc0c813894fa
         (submitEvent)="createUpdateInventario($event)"
     ></app-form-dynamic>
 
     <app-datatable
         #datatableInventario
+<<<<<<< HEAD
         (clickEmit)="$event.button.id == 2 ? handlerEdith($event.data) : null"
         [buttons]="[{icon: 'cil-trash', text: '', id: 1}, {icon: 'cil-pencil', text: '', id: 2}]"
         [keys]="['nombre_material', 'cantidad', 'valor_unidad', 'unidades']"
@@ -25,4 +30,14 @@
     ></app-datatable>
 </div>
 
+=======
+        (clickEmit)="handlerEdith($event.data)"
+        [buttons]="[{icon: 'cil-pencil', text: '', id: 2}]"
+        [keys]="['nombre_material', 'cantidad', 'valor_unidad', 'unidades']"
+        [titles]="['material', 'cantidad', 'valor', 'tipo', 'opciones']"
+    ></app-datatable>
+</div>
+
+<app-alert #alert_inventario></app-alert>
+>>>>>>> dbb364b1fecdf211d4f02f3e3074bc0c813894fa
 <app-loading *ngIf="loading"></app-loading>

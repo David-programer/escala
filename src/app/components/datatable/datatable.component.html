@@ -10,8 +10,8 @@
             </div>
 		</div>
 
-        <table class=" text-sm text-left text-gray-500 dark:text-gray-400">
-            <thead class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
+        <table class="w-full text-sm text-left text-gray-500 dark:text-gray-400">
+            <thead class="w-full text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
                 <tr>
                     <th *ngFor="let title of titles" scope="col" class="px-6 py-3">{{title}}</th>
                 </tr>
@@ -29,7 +29,7 @@
                         {{item[key]}}
                     </th>
 
-                    <td  class="px-6 py-4 flex gap-6">
+                    <td  class="px-6 py-4 flex gap-6 justify-center">
                         <span *ngFor="let button of buttons" (click)="output_click({button, data: item})"  class="{{button.icon}} text-lg hover:text-orange-600 cursor-pointer "></span>
                     </td>
                 </tr>

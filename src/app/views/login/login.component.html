@@ -12,14 +12,14 @@
 			<small class="text-gray-400">¡Bienvenido!, ingresa tus credenciales para poder continuar</small>
 
 			<!-- Form -->
-			<form class="mt-8">
+			<form class="mt-8" [formGroup]="formulario" (submit)="login()">
 				<div class="space-y-4">
-					<input type="text" placeholder="Correo" class="block text-sm py-3 px-4 rounded-lg w-full border outline-none" />
-					<input type="text" placeholder="Contraseña" class="block text-sm py-3 px-4 rounded-lg w-full border outline-none" />
+					<input formControlName="correo" type="text" placeholder="Correo" class="block text-sm py-3 px-4 rounded-lg w-full border outline-none" />
+					<input formControlName="pass" type="password" placeholder="Contraseña" class="block text-sm py-3 px-4 rounded-lg w-full border outline-none" />
 				</div>
 				
 				<div class="mt-4">
-					<button (click)="login()" class="mb-1.5 block w-full text-center px-2 btn-primary">Ingresar</button>
+					<button type="submit" class="mb-1.5 block w-full text-center px-2 btn-primary">Ingresar</button>
 				</div> 
 			</form>
 		</div>
@@ -31,6 +31,7 @@
 	  </div>
 	</div>
 </div>
-
+<app-alert #alert_users></app-alert>
+<app-loading *ngIf="loading"></app-loading>
 
 <!-- <div class="min-h-screen bg-purple-400 flex justify-center items-center"></div> -->

@@ -5,6 +5,10 @@ import { FormDynamicComponent } from 'src/app/components/form-dynamic/form-dynam
 import { ModalComponent } from 'src/app/components/modal/modal.component';
 import { TabsetComponent } from 'src/app/components/tabset/tabset.component';
 import { FormControl, Validators } from '@angular/forms';
+<<<<<<< HEAD
+=======
+import { AlertComponent } from 'src/app/components/alert/alert.component';
+>>>>>>> dbb364b1fecdf211d4f02f3e3074bc0c813894fa
 
 @Component({
   selector: 'app-herramientas',
@@ -27,6 +31,10 @@ export class HerramientasComponent implements OnInit {
   public closeLoading = {count_request: 0, total_request: 2};
 
   @ViewChild('form_dynamic') form_dynamic:FormDynamicComponent | null = null;
+<<<<<<< HEAD
+=======
+  @ViewChild('alert_herramientas') alert_herramientas:AlertComponent | null = null;
+>>>>>>> dbb364b1fecdf211d4f02f3e3074bc0c813894fa
   @ViewChild('modal_herramientas') modal_herramientas:ModalComponent | null = null;
   @ViewChild('tabsetHerramientas') tabsetHerramientas:TabsetComponent | null = null;
   @ViewChild('datatablePrestamos') datatablePrestamos:DatatableComponent | null = null;
@@ -51,9 +59,23 @@ export class HerramientasComponent implements OnInit {
         }else this.datatableHerramientas?.renderData?.next([...response.data, ...this.datatableHerramientas?.renderData?.getValue() ?? []]);
 
         this.state_edith = false;
+<<<<<<< HEAD
         this.form_dynamic?.form_group.reset();
       }
       this.loading = false;
+=======
+        this.alert_herramientas?.open_alert('¡Se ha realizado la operación con éxito!');
+        this.form_dynamic?.form_group.reset();
+      }else {
+        console.log('¡Ingresa los valores correctamente!');
+        
+        this.alert_herramientas?.open_alert(response.error ?? '¡Ingresa los valores correctamente!');
+      }
+      
+      this.loading = false;
+      // this.state_edith = false;
+      this.alert_herramientas?.close_alert(10000);
+>>>>>>> dbb364b1fecdf211d4f02f3e3074bc0c813894fa
     });
   }
 
@@ -87,7 +109,15 @@ export class HerramientasComponent implements OnInit {
           
           this.tabsetHerramientas?.handler_change_tab('FILTRAR');
           this.form_dynamic_prestamos?.form_group.reset();
+<<<<<<< HEAD
         }
+=======
+          this.alert_herramientas?.open_alert(response.message ?? '!');
+
+        }else this.alert_herramientas?.open_alert(response.error ?? '!Error al realizar la acción!');
+
+        this.alert_herramientas?.close_alert(10000);
+>>>>>>> dbb364b1fecdf211d4f02f3e3074bc0c813894fa
         this.loading = false;
       }
     });
@@ -170,7 +200,10 @@ export class HerramientasComponent implements OnInit {
     this._globalService.get_service('/user/lista_users?id=').subscribe({
       next: (response:any)=>{
         if(response.successful) this.list_users = response.data;
+<<<<<<< HEAD
         console.log(response);
+=======
+>>>>>>> dbb364b1fecdf211d4f02f3e3074bc0c813894fa
       }
     })
 

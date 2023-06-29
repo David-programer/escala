@@ -1,4 +1,5 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
+import { AlertComponent } from 'src/app/components/alert/alert.component';
 import { DatatableComponent } from 'src/app/components/datatable/datatable.component';
 import { FormDynamicComponent } from 'src/app/components/form-dynamic/form-dynamic.component';
 import { ModalComponent } from 'src/app/components/modal/modal.component';
@@ -22,6 +23,7 @@ export class UsersComponent implements OnInit{
   public id_update:string|null = '';
   
   @ViewChild('modalUsers') modalUsers:ModalComponent | null = null;
+  @ViewChild('alert_users') alert_users:AlertComponent | null = null;
   @ViewChild('form_dynamic') form_dynamic:FormDynamicComponent | null = null
   @ViewChild('datatableUsers') datatableUsers:DatatableComponent | null = null
 
@@ -67,8 +69,8 @@ export class UsersComponent implements OnInit{
             this.datatableUsers?.renderData.next([response.data[0], ...this.datatableUsers?.renderData.getValue()]);
           } 
           
-          this.alert = '!Se realizó la acción correctamente!'
-          setTimeout(() => {this.alert = null}, 10000);
+          this.alert_users?.open_alert('!Se realizó la acción correctamente!');
+          this.alert_users?.close_alert(10000);
           this.state_edith = false;
         }else this.open_modal_error(response);
 

@@ -15,11 +15,15 @@ import { DatatableComponent } from './components/datatable/datatable.component';
 import { IconModule, IconSetModule, IconSetService } from '@coreui/icons-angular';
 import { FormDynamicComponent } from './components/form-dynamic/form-dynamic.component';
 import { ProyectsComponent } from './views/proyects/proyects.component';
+import { InventarioComponent } from './views/inventario/inventario.component';
+import { CreateComponent } from './views/proyects/create/create.component';
 import { HerramientasComponent } from './views/herramientas/herramientas.component';
 import { ModalComponent } from './components/modal/modal.component';
 import { TabsetComponent } from './components/tabset/tabset.component';
+import { AlertComponent } from './components/alert/alert.component';
 
 
+@NgModule({
   declarations: [
     AppComponent,
     LoginComponent,
@@ -35,6 +39,7 @@ import { TabsetComponent } from './components/tabset/tabset.component';
     HerramientasComponent,
     ModalComponent,
     TabsetComponent,
+    AlertComponent,
   ],
   imports: [
     BrowserModule,

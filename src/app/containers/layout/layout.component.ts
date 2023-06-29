@@ -20,6 +20,11 @@ export class LayoutComponent implements OnInit{
     {icon: 'cil-baseball', title: 'Herramientas', notifications: 0, url: '/herramientas'},
   ];
 
+  public logout():void{
+    localStorage.removeItem('token');
+    this.router.navigate(['/login']);
+  }
+
   ngOnInit(): void {
     const url = window.location.href.split('/');
     this.currentPage = `/${url[url.length - 1]}`;
