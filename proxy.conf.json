@@ -1,0 +1,7 @@
+{
+    "/api/*": {
+        "target": "https://app-aescala-back.onrender.com",
+        "secure": false,
+        "logLevel": "debug"
+    }
+}
