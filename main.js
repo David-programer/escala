@@ -11,7 +11,7 @@ const createWindow = ()=>{
     appWin = new BrowserWindow({
         width,
         height,
-        title: "ESCALA",
+        title: "Aescala",
         resizable: false,
         webPreferences: {
             contextIsolation: false,
@@ -32,10 +32,6 @@ const createWindow = ()=>{
     // })
 
     appWin.setMenu(null);
-
-    // setTimeout(() => {
-    //     appWin.webContents.send('os-storage-comunication', 'Hablame manito');
-    // }, 5000);
 
     appWin.on("closed", () => {
         appWin = null;

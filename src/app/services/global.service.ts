@@ -25,6 +25,16 @@ export class GlobalService {
         )
     }
 
+    public delete_service(url:string){        
+        let token  = localStorage.getItem('token'); 
+        return this._http.delete(
+            `${this.url}${url}`, 
+            {
+                headers: {Authorization: 'Bearer '  + token}
+            }
+        )
+    }
+
     public get_service(url:string){  
         let token  = localStorage.getItem('token'); 
         return this._http.get(`${this.url}${url}`, {

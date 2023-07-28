@@ -32,8 +32,6 @@ export class DatatableComponent implements OnInit{
   }
 
   ngOnInit(): void {
-    // this.renderData.next(this.data);
-
     this.renderData.subscribe((value:any)=> {
       if(!this.load_component) {this.data = value; this.load_component = true};
       document.querySelectorAll('#datatable-body').forEach((value)=>{

@@ -24,13 +24,12 @@
                             <label for="checkbox-table-search-1" class="sr-only">checkbox</label>
                         </div>
                     </td> -->
-                    
-                    <th *ngFor="let key of keys" scope="row" class="px-6 py-4 font-medium text-gray-900 dark:text-white whitespace-nowrap w-full">
+                    <th #key_unique_datatable_item *ngFor="let key of keys" scope="row" [ngClass]="{'whitespace-nowrap': key_unique_datatable_item.offsetWidth < 500}" class="px-6 py-4 font-medium text-gray-900 dark:text-white w-full">
                         {{item[key]}}
                     </th>
 
                     <td  class="px-6 py-4 flex gap-6 justify-center">
-                        <span *ngFor="let button of buttons" (click)="output_click({button, data: item})"  class="{{button.icon}} text-lg hover:text-orange-600 cursor-pointer "></span>
+                        <span *ngFor="let button of buttons" (click)="output_click({button, data: item})"  class="{{button.icon}} {{button.class}} text-lg hover:text-orange-600 cursor-pointer "></span>
                     </td>
                 </tr>
             </tbody>

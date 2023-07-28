@@ -6,12 +6,13 @@
             <h2 class="m-0 font-medium" id="title-page">{{section.title}}</h2>
             <small>{{section.description}}</small>
 
-            <div class="mt-6 grid sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
+            <div class="mt-6 grid sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4" [style]="section.inputs.length == 1 ? 'grid-template-columns: 1fr' : ''">
                 <div *ngFor="let input of section.inputs" class="relative">
                     <label for="{{input.name}}" class="text-gray-700 text-sm hover:text-gray-400 cursor-pointer " ><span class="mr-1 {{input.icon}}"></span>{{input.label | uppercase}}</label>
                     <input 
                         #input_form
                         id="{{input.name}}"
+                        [checked]="input.value"
                         [formControlName]="input.name"
                         (change)="validate_input(input.name)"
                         [ngClass]="{'w-full': input.attributes?.type != 'checkbox'}"

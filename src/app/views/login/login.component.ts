@@ -47,21 +47,31 @@ export class LoginComponent implements OnInit {
     }
 
     this.loading = true;
-    this._globalService.post_service('/loguin', this.formulario.value).subscribe((response:any)=>{
-      if(response.successful){
-        localStorage.setItem('token', response.data.token);
-        this.router.navigate(['/home']);
-      }else{
-        this.alert_users?.open_alert(response.error ?? '!Ingresa las credenciales correctamente!');
-        this.alert_users?.close_alert(10000);
+    this._globalService.post_service('/loguin', this.formulario.value).subscribe({
+      next: (response:any)=>{
+        if(response.successful){
+          localStorage.setItem('user', JSON.stringify(response.data.user));
+          localStorage.setItem('token', response.data.token);
+          this.router.navigate(['/home']);
+          // this.router.navigate(['/inventario']);   
+        }else{
+            this.alert_users?.open_alert(response.error ?? '¡Ingresa las credenciales correctamente!');
+          this.alert_users?.close_alert(10000);
+        }
+        this.loading = false;
+      },
+      error: (error)=>{
+        this.alert_users?.open_alert('¡Falló la autenticación del usuario! Intentando nuevamente...');
+        this.alert_users?.close_alert(4000);
+
+        this.loading = false;
+        setTimeout(() => {this.login();}, 4000);
       }
-      this.loading = false;
     });
 
   }
 
   ngOnInit(): void {
-    // this.router.navigate(['/proyects']);   
     // this._ipcRenderer?.emit('os-storage-comunication', 'Desde el front mi papacho');
     // this._ipcRenderer = window?.require("electron").ipcRenderer;
     
