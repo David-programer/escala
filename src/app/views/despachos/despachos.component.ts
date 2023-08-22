@@ -1,5 +1,6 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
+import { ActivatedRoute } from '@angular/router';
 import { AlertComponent } from 'src/app/components/alert/alert.component';
 import { GlobalService } from 'src/app/services/global.service';
 
@@ -9,7 +10,7 @@ import { GlobalService } from 'src/app/services/global.service';
 })
 export class DespachosComponent implements OnInit{
 
-  constructor(private _globalService: GlobalService){}
+  constructor(private _globalService: GlobalService,private route: ActivatedRoute){}
 
   public loading:boolean = true;
   public datalist_users:any[] = [];
@@ -49,6 +50,9 @@ export class DespachosComponent implements OnInit{
     let id_inventario = this.form_despachos.controls['inventario_selected'].value,
     item_inventario = this.data_inventario.find(inventario => inventario.id == id_inventario);
 
+    if(id_inventario == 'null') return;
+
+
     this.inventarios_selected.push({
       ...item_inventario,
       cantidad_usuario: 1,
@@ -67,6 +71,20 @@ export class DespachosComponent implements OnInit{
     }
   }
 
+  public handler_cancel_action():void{
+    this.datalist_inventario = this.data_inventario;
+    this.form_despachos.reset();
+    this.proyect_selected = null;
+    this.inventarios_selected = [];
+
+    Object.keys(this.form_despachos.controls).forEach((key:string) => {
+      let element = document.getElementById(`input-${key}`);
+
+      element?.classList.remove('valid', 'border-green-500');
+      element?.classList.remove('invalid','border-red-500');
+    });
+  }
+
   public create_or_update_despachos():void{
     if(this.validate_inputs()) { this.alert_despachos?.open_alert('¡Completa los campos correctamente!'); return
     }else this.alert_despachos?.close_alert();
@@ -80,13 +98,10 @@ export class DespachosComponent implements OnInit{
       })
     };
 
-
     this._globalService.post_service('/inventario_material/insert_inventario_solicitud', body).subscribe({
       next: (response:any)=>{
         if(response.successful){
-          this.form_despachos.reset();
-          this.proyect_selected = null;
-          this.inventarios_selected = [];
+          this.handler_cancel_action();
           this.alert_despachos?.open_alert('¡Se ha realizado la operación con éxito!');
         } else this.alert_despachos?.open_alert(response.error ?? '¡Error al realizar la acción!');
   
@@ -162,5 +177,11 @@ export class DespachosComponent implements OnInit{
     this.get_users();
     this.get_proyects();
     this.get_inventario();
+
+    // const ID_DESPACHO = this.route.snapshot.paramMap.get('id');
+
+    // if(ID_DESPACHO){
+    //   this._globalService.get_service('')
+    // }
   }
 }

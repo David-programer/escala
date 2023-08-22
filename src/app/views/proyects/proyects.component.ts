@@ -7,6 +7,9 @@ import { TabsetComponent } from 'src/app/components/tabset/tabset.component';
 import { DatatableComponent } from 'src/app/components/datatable/datatable.component';
 import { FormDynamicComponent } from 'src/app/components/form-dynamic/form-dynamic.component';
 import { FinanzasComponent } from './finanzas/finanzas.component';
+import { Router } from '@angular/router';
+import { GlobalUtil } from 'src/app/utils/global.util';
+import { FormControl } from '@angular/forms';
 
 @Component({
   templateUrl: './proyects.component.html',
@@ -15,7 +18,7 @@ import { FinanzasComponent } from './finanzas/finanzas.component';
 
 export class ProyectsComponent implements OnInit{
 
-  constructor(private _globalService: GlobalService){}
+  constructor(private _globalService: GlobalService, private router: Router, private _globalUtil: GlobalUtil){}
 
   public data_modal:any = {};
   public id_tarea:string = '';
@@ -26,6 +29,7 @@ export class ProyectsComponent implements OnInit{
   public data_estados:any[] = [];
   public inputs_tareas:any[] = [];
   public data_ciudades:any[] = [];
+  public data_inventario:any[] = [];
   public inputs_avances:any[] = [];
   public data_tipo_tareas:any[] = [];
   public inputs_proyectos:any[] = [];
@@ -41,11 +45,12 @@ export class ProyectsComponent implements OnInit{
   @ViewChild('modal_form') modal_form:ModalComponent | null = null;
   @ViewChild('modal_info') modal_info:ModalComponent | null = null;
   @ViewChild('modal_tareas') modal_tareas:ModalComponent | null = null;
-  @ViewChild('app_finanzas') app_finanzas:FinanzasComponent | null = null;
   @ViewChild('modal_avances') modal_avances:ModalComponent | null = null;
+  @ViewChild('app_finanzas') app_finanzas:FinanzasComponent | null = null;
   @ViewChild('modal_finanzas') modal_finanzas:ModalComponent | null = null;
-  @ViewChild('alert_proyectos') alert_proyectos:AlertComponent | null = null;
   @ViewChild('tabset_avances') tabset_avances:TabsetComponent | null = null;
+  @ViewChild('alert_proyectos') alert_proyectos:AlertComponent | null = null;
+  @ViewChild('modal_inventario') modal_inventario:ModalComponent | null = null;
   @ViewChild('datatable_avances') datatable_avances:DatatableComponent | null = null;
   @ViewChild('form_dynamic_tareas') form_dynamic_tareas:FormDynamicComponent | null = null;
   @ViewChild('form_dynamic_avance') form_dynamic_avance:FormDynamicComponent | null = null;
@@ -64,6 +69,7 @@ export class ProyectsComponent implements OnInit{
     this.data_modal = {};
     this.form_dynamic_proyecos?.form_group.reset();
     this.modal_form?.open_modal();
+    this.form_dynamic_proyecos?.form_group.setControl('codigo_proyecto', new FormControl(this._globalUtil.generateRandomCode()));
   }
 
   public close_modal():void{
@@ -87,9 +93,8 @@ export class ProyectsComponent implements OnInit{
 
   public handler_update_proyecto(data:any):void{
     this.data_modal = data;
-
     data.fec_inicio = data.fec_inicio.split(' ')[0];
-    data.fec_fin_real = data.fec_fin_real?.split(' ')[0];
+    data.fec_fin_real = data.fec_fin_real ? data.fec_fin_real?.split(' ')[0] : null;
     data.fec_fin_estimado = data.fec_fin_estimado.split(' ')[0];    
     data.id_user = this.list_users.find(item => item.nombre_completo == data.nombre_completo )?.nombre_completo;
     
@@ -109,7 +114,7 @@ export class ProyectsComponent implements OnInit{
 
     let data = {
       ...datos,
-      id: this.id_tarea,
+      id: this.data_modal?.id ?? "",
       id_user: this.list_users.find(item => item.nombre_completo.toUpperCase() == datos.id_user.toUpperCase())?.id,
       id_estado: this.data_estados.find(item => item.nombre_estado == datos.id_estado)?.id,
     }
@@ -140,7 +145,7 @@ export class ProyectsComponent implements OnInit{
     let fecha = new Date(item.fec_fin_estimado).getTime(),
     now_fecha = new Date().getTime();
     item.dias_restantes = Math.floor((fecha - now_fecha) / (1000 * 60 * 60 * 24));
-    item.color = item.dias_restantes <= 8 ? 'red' : item.dias_restantes <= 15 ? 'orange': 'green';
+    item.color = item.dias_restantes <= 0 ? 'red' : item.dias_restantes <= 3 ? 'orange': 'green';
     item.total = Number(item.pres_mano_obra) + Number(item.pres_materiales) + Number(item.pres_otros)
 
     return item
@@ -227,9 +232,11 @@ export class ProyectsComponent implements OnInit{
           if(response.successful) proyect.tareas = response.data.map((item:any) => {
             item.porcentaje = `${Number(item.porcentaje) >= 100 ? 100 : Number(item.porcentaje)}%`;
             item.fec_inicio = item.fec_inicio.split(' ')[0];
-            item.fec_fin = item.fec_fin.split(' ')[0];
+            item.fec_fin = item.fec_fin ? item.fec_fin?.split(' ')[0] : null;
             return item
           });
+
+          console.log(response.data);
 
           this.loading = false;
         }
@@ -254,7 +261,7 @@ export class ProyectsComponent implements OnInit{
           this.data_avance.id_tarea = id_tarea;
           this.modal_avances?.open_modal();
           this.datatable_avances?.renderData.next(response.data.map((item:any) => {item.createdAt = item.createdAt.split('T')[0]; return item}));
-        }
+        }else this.datatable_avances?.renderData.next([]);
         this.loading = false;
       }
     });
@@ -374,8 +381,9 @@ export class ProyectsComponent implements OnInit{
         if(response.successful){
           this.modal_finanzas?.open_modal();
           this.app_finanzas?.open_proyecto(response.data);
+          this.app_finanzas?.datalist_proyects = this.copy_data.map((item:any) => {return {codigo: item.codigo_proyecto, value: item.id, title: `${item.codigo_proyecto} - ${item.nombre_proyecto}`}});
+
         }else this.app_finanzas?.open_proyecto({material:[]});
-        this.loading = false;
       }
     })
   }
@@ -384,6 +392,35 @@ export class ProyectsComponent implements OnInit{
     this.modal_finanzas?.close_modal();
     // this.app_finanzas?.open_proyecto([]);
   }
+
+  // ------------------------------------ INVENTARIO --------------------------------------- //
+  
+  public get_inventario_proyecto():void{
+    this.loading = true;
+    this._globalService.get_service('/inventario_material/lista_inventario_solicitud').subscribe({
+      next: (response:any)=>{
+        if(response.successful){
+          this.data_inventario = response.data.map((item:any) => {
+            item.materiales = item.materiales.map((material:any) =>{
+              console.log(material.createdAt);
+              material.createdAt = material.createdAt?.split(' ')[0];
+              return material
+            })
+            return item
+          });
+
+          this.modal_inventario?.open_modal();
+          console.log(this.data_inventario);
+        }
+
+        this.loading = false;
+      }
+    })
+  }
+
+  // public handler_edit_inventario():void{
+  //   this.router.navigate([`/despachos/:id`]);
+  // }
 
   // ------------------------------------ OnInit --------------------------------------- //
 

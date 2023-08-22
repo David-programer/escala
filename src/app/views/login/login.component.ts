@@ -4,7 +4,6 @@ import { Component, OnInit, ViewChild} from '@angular/core';
 import { GlobalService } from '../../services/global.service';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { AlertComponent } from 'src/app/components/alert/alert.component';
-import {ipcRenderer} from 'electron';
 
 export {};
 declare var window: Window;

@@ -6,6 +6,7 @@ import { ModalComponent } from 'src/app/components/modal/modal.component';
 import { TabsetComponent } from 'src/app/components/tabset/tabset.component';
 import { FormControl, Validators } from '@angular/forms';
 import { AlertComponent } from 'src/app/components/alert/alert.component';
+import { GlobalUtil } from 'src/app/utils/global.util';
 
 @Component({
   selector: 'app-herramientas',
@@ -15,7 +16,7 @@ import { AlertComponent } from 'src/app/components/alert/alert.component';
 
 export class HerramientasComponent implements OnInit {
 
-  constructor(private _globalService: GlobalService){}
+  constructor(private _globalService: GlobalService, private _globalUtil: GlobalUtil){}
 
   public inputs:any[] = [];
   public tabset:string = 'FILTRAR';
@@ -52,9 +53,9 @@ export class HerramientasComponent implements OnInit {
           );
         }else this.datatableHerramientas?.renderData?.next([...response.data, ...this.datatableHerramientas?.renderData?.getValue() ?? []]);
 
-        this.state_edith = false;
         this.alert_herramientas?.open_alert('¡Se ha realizado la operación con éxito!');
         this.form_dynamic?.form_group.reset();
+        this.handler_reset();
       }else {
         this.alert_herramientas?.open_alert(response.error ?? '¡Ingresa los valores correctamente!');
       }
@@ -87,7 +88,11 @@ export class HerramientasComponent implements OnInit {
             this.datatablePrestamos?.renderData.next(new_data);
             this.datatableHerramientas?.renderData.next(
               this.datatableHerramientas?.renderData.getValue().map(item => {
-                if(item.id == this.data_modal.id) item.prestamos = new_data;
+                if(item.id == this.data_modal.id) {
+                  item.prestamos = new_data;
+                  item.estado_prestado = new_response.tipo_prestamo == "Prestamo" ? "Prestado" : "Libre";
+                  item.prestatario = new_response.tipo_prestamo == "Prestamo" ? new_response.nombre_completo : '';
+                }
                 return item
               })
             );
@@ -95,6 +100,11 @@ export class HerramientasComponent implements OnInit {
             this.data_modal.prestamos 
             ? this.data_modal.prestamos.unshift(new_response)
             : this.data_modal.prestamos = [new_response];
+
+            this.data_modal.estado_prestado = new_response.tipo_prestamo == "Prestamo" ? "Prestado" : "Libre";
+            this.data_modal.prestatario = new_response.tipo_prestamo == "Prestamo" ? new_response.nombre_completo : '';
+
+            this.datatablePrestamos?.renderData.next(this.data_modal.prestamos)
           }
           
           this.tabsetHerramientas?.handler_change_tab('FILTRAR');
@@ -117,6 +127,12 @@ export class HerramientasComponent implements OnInit {
     this.scrollTo('toltipo-info');
     this.id_update = data.id;
     this.state_edith = true;
+  }
+
+  public handler_reset():any{
+    this.state_edith = false;
+    let controls:any = this.form_dynamic?.form_group.controls
+    controls['codigo'].setValue(this._globalUtil.generateRandomCode())
   }
 
   public delete():void{
@@ -158,7 +174,7 @@ export class HerramientasComponent implements OnInit {
           {value: null, name: 'referencia', icon: 'cil-barcode', label: 'Referencia', attributes: {type: 'text'}, validators: ['required'],},
           {value: null, name: 'marca', icon: 'cil-barcode', label: 'Marca', attributes: {type: 'text'}, validators: ['required'],},
           {value: null, name: 'estado', icon: 'cil-notes', label: 'Estado', attributes: {type: 'text', list: 'datalist_estados'}, validators: ['required'],},
-          {value: null, name: 'codigo', icon: 'cil-notes', label: 'Código', attributes: {type: 'text'}, validators: ['required'],},
+          {value: this._globalUtil.generateRandomCode(), name: 'codigo', icon: 'cil-notes', label: 'Código', attributes: {type: 'text'}, validators: ['required'],},
         ]
       },
     ];
@@ -183,16 +199,22 @@ export class HerramientasComponent implements OnInit {
             prestamo.fec_prestamo = prestamo.fec_prestamo.split(' ')[0]
           });
 
+          if(item.prestamos.length >= 1){
+            const ultimoPrestamo = item.prestamos[0];
+            item.estado_prestado = ultimoPrestamo.tipo_prestamo == "Prestamo" ? "Prestado" : "Libre";
+            item.prestatario = ultimoPrestamo.tipo_prestamo == "Prestamo" ? ultimoPrestamo.nombre_completo : '';
+          }else item.estado_prestado = 'Libre';
+          
           return item
         }));
       }
       this.loading = false;
-    })
+    });
 
     this._globalService.get_service('/user/lista_users?id=').subscribe({
       next: (response:any)=>{
-        if(response.successful) this.list_users = response.data;
+        if(response.successful) this.list_users = response.data.filter((user:any) => user.rol_name == 'Colaborador');
       }
-    })
+    });
   }
 }

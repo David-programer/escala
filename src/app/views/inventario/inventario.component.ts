@@ -34,11 +34,14 @@ export class InventarioComponent implements OnInit {
           this.datatableInventario?.renderData.next(
             this.datatableInventario?.renderData.getValue().map(item => item.id == this.id_update ? response.data[0] : item)
           )
-        }else this.datatableInventario?.renderData?.next([...this.datatableInventario?.renderData.getValue(),response.data[0]]);
+        }else this.datatableInventario?.renderData?.next([response.data[0], ...this.datatableInventario?.renderData.getValue()]);
 
         this.form_dynamic?.form_group.reset();
         this.alert_inventario?.open_alert('¡Se ha realizado la operación con éxito!');
       }else this.alert_inventario?.open_alert(response.error ?? '¡Ingresa los valores correctamente!');
+      
+      console.log(response)
+
       this.id_update = '';
       this.loading = false;
       this.state_edith = false;
@@ -83,10 +86,11 @@ export class InventarioComponent implements OnInit {
         title: 'DATOS BÁSICOS',
         description: 'Información básica del activo a registrar',
         inputs: [
-          {value: null, name: 'nombre_material', icon: 'cil-user', label: 'Material', attributes: {type: 'text'}},
-          {value: null, name: 'id_unidad', icon: 'cil-barcode', label: 'Tipo', attributes: {type: 'text', list:"datalist_unidades"}},
-          {value: null, name: 'cantidad', icon: 'cil-barcode', label: 'Cantidad', attributes: {type: 'number'}},
-          {value: null, name: 'valor_unidad', icon: 'cil-money', label: 'Valor por unidad', attributes: {type: 'number'}},
+          {value: null, name: 'nombre_material', icon: 'cil-user', label: 'Material', attributes: {type: 'text'}, validators: ['required']},
+          {value: null, name: 'id_unidad', icon: 'cil-barcode', label: 'Tipo', attributes: {type: 'text', list:"datalist_unidades"}, validators: ['required']},
+          {value: null, name: 'cantidad', icon: 'cil-barcode', label: 'Cantidad', attributes: {type: 'number'}, validators: ['required']},
+          {value: null, name: 'cantidad_min', icon: 'cil-money', label: 'Cantidad mínima', attributes: {type: 'number'}, validators: ['required']},
+          {value: null, name: 'valor_unidad', icon: 'cil-money', label: 'Valor por unidad', attributes: {type: 'number'}, validators: ['required']},
           {value: null, name: 'descripccion', icon: 'cil-notes', label: 'Descripción', attributes: {type: 'text'}},
         ]
       },

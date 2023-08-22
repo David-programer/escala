@@ -1,5 +1,4 @@
-import { formatCurrency } from '@angular/common';
-import { Component, EventEmitter, Output, ViewChild } from '@angular/core';
+import { Component, EventEmitter, Input, Output, ViewChild } from '@angular/core';
 import { GlobalService } from 'src/app/services/global.service';
 import { AlertComponent } from 'src/app/components/alert/alert.component';
 import { DatatableComponent } from 'src/app/components/datatable/datatable.component';
@@ -19,7 +18,10 @@ export class FinanzasComponent {
   public data_cotizacion:any = {};
   public update_state:boolean = false;
   public proyecto:any = {material:[]};
+  @Input() datalist_proyects:any[] = [];
+  public datalist_inventario:any[] = [];
   @Output() closeModal = new EventEmitter<any>();
+  public closeLoading = {count_request: 0, total_request: 2};
   @ViewChild('alert_finanzas') alert_finanzas:AlertComponent | null = null;
   @ViewChild('tabset_finanzas') tabset_finanzas:TabsetComponent | null = null;
   @ViewChild('datatable_finanzas') datatable_finanzas:DatatableComponent | null = null;
@@ -36,10 +38,49 @@ export class FinanzasComponent {
     },
   ];
 
+  public inputs_cotizaciones = [
+    {
+      title: 'CREAR COTIZACIÓN',
+      description: 'Ingresa un cotización a un proyecto seleccionado',
+      inputs: [
+        {value: null, name: 'id_inventario', icon: 'cil-notes', label: 'Inventario', attributes: {type: 'text', list: 'datalist_inventario'}, validators: ['required'],},
+        {value: null, name: 'id_proyecto', icon: 'cil-factory', label: 'Proyecto', attributes: {type: 'text',  list: 'datalist_proyects'}, validators: ['required']},
+        {value: null, name: 'cantidad', icon: 'cil-money', label: 'Cantidad', attributes: {type: 'number'}, validators: ['required'],},
+        {value: null, name: 'valor_unidad', icon: 'cil-money', label: 'Valor (und)', attributes: {type: 'number'}, validators: ['required'],},
+      ]
+    }
+  ]
+
   public open_proyecto(proyecto:any):any{
     this.proyecto = proyecto;    
     this.datatable_finanzas?.renderData.next(proyecto?.finanzas?.map((item:any)=> this.format_element(item)));
+
+    console.log(this.datalist_proyects);
+    this.get_services();
   };
+
+  public get_services():void{
+    //INVENTARIO
+    this._globalService.get_service('/inventario_material/lista_inventario_material?id=').subscribe({
+      next: (response:any)=>{
+        if(response.successful) this.datalist_inventario = response.data.map((item:any) => {return {value: item.id, title: item.nombre_material}});
+        this.close_loading();
+      },
+      error: ()=>{}
+    });
+
+    //COTIZACIONES
+    this._globalService.get_service('/cotizacion/comparativo_cotixentregas?id=').subscribe({
+      next: (response:any)=>{
+        console.log(response);
+      }
+    });
+  }
+
+  public close_loading():void{
+    this.closeLoading.count_request++;
+    if(this.closeLoading.total_request == this.closeLoading.count_request) this.loading = false;
+  }
 
   public format_element(item:any):any{
     item.createdAt = item?.createdAt?.split('T')[0];
@@ -71,7 +112,7 @@ export class FinanzasComponent {
     this.data_cotizacion = cotizacion;
     let {concepto, tipo, valor} = cotizacion;
 
-    this.tabset_finanzas?.handler_change_tab('CREAR COTIZACIONES');
+    this.tabset_finanzas?.handler_change_tab('CREAR INGRESO | EGRESO');
     this.form_dynamic_finanzas?.form_group.setValue({concepto, tipo, valor});
   }
 
@@ -100,7 +141,7 @@ export class FinanzasComponent {
 
           this.update_state = false;
           this.form_dynamic_finanzas?.form_group.reset();
-          this.tabset_finanzas?.handler_change_tab('FILTRAR COTIZACIONES');
+          this.tabset_finanzas?.handler_change_tab('FILTRAR INGRESO | EGRESO');
           this.alert_finanzas?.open_alert('¡Se ha realizado la acción con éxito!');
         }else this.alert_finanzas?.open_alert(response.error ?? '¡Error al realizar la acción!');
 
