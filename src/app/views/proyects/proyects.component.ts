@@ -1,26 +1,15 @@
-<<<<<<< HEAD
-import { Component } from '@angular/core';
-=======
 import { Component, OnInit, ViewChild} from '@angular/core';
 import { BehaviorSubject } from 'rxjs';
 import { AlertComponent } from 'src/app/components/alert/alert.component';
 import { FormDynamicComponent } from 'src/app/components/form-dynamic/form-dynamic.component';
 import { ModalComponent } from 'src/app/components/modal/modal.component';
 import { GlobalService } from 'src/app/services/global.service';
->>>>>>> dbb364b1fecdf211d4f02f3e3074bc0c813894fa
 
 @Component({
   templateUrl: './proyects.component.html',
   styleUrls: ['./proyects.component.css']
 })
-<<<<<<< HEAD
 export class ProyectsComponent {
-
-=======
-export class ProyectsComponent implements OnInit{
-
-  constructor(private _globalService: GlobalService){}
-
   public data_modal:any = {};
   public color:any = {'': ''};
   private copy_data:any[] = [];
@@ -184,5 +173,4 @@ export class ProyectsComponent implements OnInit{
       }
     });
   }
->>>>>>> dbb364b1fecdf211d4f02f3e3074bc0c813894fa
 }
