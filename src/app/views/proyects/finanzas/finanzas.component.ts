@@ -16,16 +16,21 @@ export class FinanzasComponent {
 
   public loading:boolean = false;
   public data_cotizacion:any = {};
+  public id_cotizacion:string = '';
   public update_state:boolean = false;
   public proyecto:any = {material:[]};
-  @Input() datalist_proyects:any[] = [];
   public datalist_inventario:any[] = [];
+  @Input() datalist_proyects:any[] = [];
+  public state_edith_cotizaciones:boolean = false;
   @Output() closeModal = new EventEmitter<any>();
-  public closeLoading = {count_request: 0, total_request: 2};
+  public closeLoading = {count_request: 0, total_request: 3};
   @ViewChild('alert_finanzas') alert_finanzas:AlertComponent | null = null;
-  @ViewChild('tabset_finanzas') tabset_finanzas:TabsetComponent | null = null;
+  @ViewChild('tabset_ingreso_egreso') tabset_finanzas:TabsetComponent | null = null;
+  @ViewChild('tabset_cotizaciones') tabset_cotizaciones:TabsetComponent | null = null;
   @ViewChild('datatable_finanzas') datatable_finanzas:DatatableComponent | null = null;
   @ViewChild('form_dynamic_finanzas') form_dynamic_finanzas:FormDynamicComponent | null = null;
+  @ViewChild('datatable_cotizaciones') datatable_cotizaciones:DatatableComponent | null = null;
+  @ViewChild('form_dynamic_cotizaciones') form_dynamic_cotizaciones:FormDynamicComponent | null = null;
 
   public inputs_finanzas = [
     {
@@ -59,27 +64,10 @@ export class FinanzasComponent {
     this.get_services();
   };
 
-  public get_services():void{
-    //INVENTARIO
-    this._globalService.get_service('/inventario_material/lista_inventario_material?id=').subscribe({
-      next: (response:any)=>{
-        if(response.successful) this.datalist_inventario = response.data.map((item:any) => {return {value: item.id, title: item.nombre_material}});
-        this.close_loading();
-      },
-      error: ()=>{}
-    });
-
-    //COTIZACIONES
-    this._globalService.get_service('/cotizacion/comparativo_cotixentregas?id=').subscribe({
-      next: (response:any)=>{
-        console.log(response);
-      }
-    });
-  }
-
-  public close_loading():void{
-    this.closeLoading.count_request++;
-    if(this.closeLoading.total_request == this.closeLoading.count_request) this.loading = false;
+  public handler_reset():void{
+    this.id_cotizacion = '';
+    this.state_edith_cotizaciones = false;
+    this.form_dynamic_cotizaciones?.form_group.reset();
   }
 
   public format_element(item:any):any{
@@ -141,7 +129,7 @@ export class FinanzasComponent {
 
           this.update_state = false;
           this.form_dynamic_finanzas?.form_group.reset();
-          this.tabset_finanzas?.handler_change_tab('FILTRAR INGRESO | EGRESO');
+          this.tabset_finanzas?.handler_change_tab('LISTAR FINANZAS');
           this.alert_finanzas?.open_alert('¡Se ha realizado la acción con éxito!');
         }else this.alert_finanzas?.open_alert(response.error ?? '¡Error al realizar la acción!');
 
@@ -153,6 +141,113 @@ export class FinanzasComponent {
 
   public close_modal():void{
     this.update_state = false;
+    this.closeLoading.count_request = 0
     this.closeModal.emit();
   }
+
+  public close_loading():void{
+    this.closeLoading.count_request++;
+    if(this.closeLoading.total_request == this.closeLoading.count_request) this.loading = false;
+  }
+
+  // -------------------------------------------------------- COTIZACIONES ------------------------------------------- // 
+  
+  public create_or_update($event:any):void{
+    this.loading = true;
+    let id_inventario = this.datalist_inventario.find(item => item.title.toLowerCase().trim() == $event.id_inventario.toLowerCase().trim())?.value,
+    codigo_proyecto = $event.id_proyecto.split('-')[0].trim(),
+    id_proyecto = this.datalist_proyects.find(proyect => proyect.codigo == codigo_proyecto)?.value;
+
+    if(!id_inventario || !id_proyecto){
+      this.alert_finanzas?.open_alert('¡Digita los valores correctamente!');
+      return
+    };
+
+    let body = {...$event, id: this.id_cotizacion, id_proyecto, id_inventario}
+
+    this._globalService.post_service('/cotizacion/insert_cotizacion', body).subscribe({
+      next: (response:any)=>{
+        if(response.successful){
+          let new_data = response.data[0];
+          new_data.createdAt = new_data.createdAt.split(' ')[0];
+
+          if(this.state_edith_cotizaciones){
+            this.datatable_cotizaciones?.renderData.next(this.datatable_cotizaciones?.renderData.getValue().map(item => item.id == this.id_cotizacion ? new_data : item));
+          }else this.datatable_cotizaciones?.renderData.next([new_data, ...this.datatable_cotizaciones?.renderData.getValue()]);
+
+          this.handler_reset();
+          this.alert_finanzas?.open_alert('¡Se ha realizado la acción con éxito!');
+          this.tabset_cotizaciones?.handler_change_tab('LISTA COTIZACIONES');
+          
+        }else this.alert_finanzas?.open_alert(response.error ?? '¡Error al realizar la acción!');
+        this.loading = false;
+        this.alert_finanzas?.close_alert(4000)
+      }
+    });
+  }
+
+  public setDatalistProyects(proyects:any[]):void{
+    this.datalist_proyects = proyects;
+  }
+
+  public get_services():void{
+    //INVENTARIO
+    this._globalService.get_service('/inventario_material/lista_inventario_material?id=').subscribe({
+      next: (response:any)=>{
+        if(response.successful) this.datalist_inventario = response.data.map((item:any) => {return {value: item.id, title: item.nombre_material}});
+        this.close_loading();
+      },
+      error: ()=>{}
+    });
+
+    //COTIZACIONES
+    this._globalService.get_service('/cotizacion/comparativo_cotixentregas?id=').subscribe({
+      next: (response:any)=>{
+        console.log(response);
+        this.close_loading();
+      }
+    });
+
+    this._globalService.get_service(`/cotizacion/lista_cotizacion?id=${this.proyecto.id}`).subscribe({
+      next: (response:any)=> {
+        if(response.successful){
+          this.datatable_cotizaciones?.renderData.next(response.data.map((item:any) => {
+            item.createdAt = item.createdAt.split(' ')[0];
+            return item
+          }));
+        }
+        this.close_loading();
+      }
+    });
+  }
+
+  public delete_cotizacion({id}:any):void{
+    this.loading = true;
+    this._globalService.delete_service(`/cotizacion/delete_cotizacion?id=${id}`).subscribe({
+      next: (response:any)=>{
+        if(response.successful){
+          this.datatable_cotizaciones?.renderData.next(
+            this.datatable_cotizaciones?.renderData.getValue().filter(item => item.id != id)
+          );
+
+          this.alert_finanzas?.open_alert('¡Se ha realizado la acción con éxito!');
+        }else this.alert_finanzas?.open_alert(response.error ?? '¡Error al realizar la acción!');
+        
+        this.loading = false;
+        this.alert_finanzas?.close_alert(5000);
+      }
+    })
+  }
+
+  public handle_update_cotizacion({valor_unidad, cantidad, id_proyecto, id_inventario, id}:any):void{
+    this.state_edith_cotizaciones = true;
+
+    this.id_cotizacion = id;
+    this.tabset_cotizaciones?.handler_change_tab('INGRESAR COTIZACIONES');
+    this.form_dynamic_cotizaciones?.form_group.setValue({cantidad, valor_unidad,
+      id_proyecto: this.datalist_proyects.find(proyect => proyect.value == id_proyecto)?.title,
+      id_inventario: this.datalist_inventario.find(inventario => inventario.value == id_inventario)?.title,
+    });
+  }
+
 }

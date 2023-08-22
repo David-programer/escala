@@ -12,6 +12,7 @@ export class TabsetComponent implements OnInit {
   public tab:string|null = null;
   @Input() default:string|null = null;
   @Output() changeTab = new EventEmitter<string>();
+  @Input() order:'flex-row'|'flex-row-reverse' = 'flex-row';
 
   public handler_change_tab(tab:string):void{
     document.getElementById(this.tab ?? '')?.classList.add('hidden');    

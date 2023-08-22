@@ -122,12 +122,15 @@ export class ProyectsComponent implements OnInit{
     this._globalService.post_service('/proyecto/insert_proyecto', data).subscribe({
       next: (response:any)=>{
         if(response.successful){
+          let data:any[] = [];
+
           if(this.update_state){
-            this.data.next(
-              this.data.getValue().map(item => item.id == response.data[0].id ? this.transform_data(response.data[0]) : item)
-            )
-          }else this.data.next([this.transform_data(response.data[0]), ...this.data.getValue()]);
+            data = this.data.getValue().map(item => item.id == response.data[0].id ? this.transform_data(response.data[0]) : item)
+          } else data = [this.transform_data(response.data[0]), ...this.data.getValue()]
           
+          this.data.next(data);
+          this.copy_data = data;
+          this.app_finanzas?.setDatalistProyects(this.copy_data.map((item:any) => {return {codigo: item.codigo_proyecto, value: item.id, title: `${item.codigo_proyecto} - ${item.nombre_proyecto}`}}))
           this.alert_proyectos?.open_alert('¡Se ha realizado la acción con éxito!');
           this.close_modal();
         }
@@ -151,7 +154,7 @@ export class ProyectsComponent implements OnInit{
     return item
   }
 
-    // ------------------------------------ TAREAS --------------------------------------- //
+  // ------------------------------------ TAREAS --------------------------------------- //
 
   public handler_update_tarea(data:any):void{
 
@@ -381,9 +384,12 @@ export class ProyectsComponent implements OnInit{
         if(response.successful){
           this.modal_finanzas?.open_modal();
           this.app_finanzas?.open_proyecto(response.data);
-          this.app_finanzas?.datalist_proyects = this.copy_data.map((item:any) => {return {codigo: item.codigo_proyecto, value: item.id, title: `${item.codigo_proyecto} - ${item.nombre_proyecto}`}});
-
         }else this.app_finanzas?.open_proyecto({material:[]});
+        
+        this.app_finanzas?.setDatalistProyects(
+          this.copy_data.map((item:any) => {return {codigo: item.codigo_proyecto, value: item.id, title: `${item.codigo_proyecto} - ${item.nombre_proyecto}`}})
+        );
+        this.loading = false;
       }
     })
   }

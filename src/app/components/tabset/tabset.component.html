@@ -1,5 +1,5 @@
 <div>
-    <nav class="flex flex-col sm:flex-row">
+    <nav class="flex {{order}}">
         <button 
             *ngFor="let tab_for of tabs"
             [ngClass]="{'border-b-2 border-orange-500 text-orange-500 font-medium': tab_for == tab}" 

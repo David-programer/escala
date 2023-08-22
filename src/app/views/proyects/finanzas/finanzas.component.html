@@ -7,27 +7,16 @@
     <div>
         <app-tabset
             id="finanzas"
-            #tabset_finanzas
             [tabs]="['INGRESO | EGRESO', 'COTIZACIONES']"
         >
             <div id="INGRESO | EGRESO">
                 <app-tabset
                     id="ingreso_egreso"
-                    [tabs]="['FILTRAR', 'CREAR']"
+                    #tabset_ingreso_egreso
+                    order="flex-row-reverse"
+                    [tabs]="['LISTAR FINANZAS', 'CREAR INGRESO | EGRESO']"
                 >
-                    <div id="CREAR INGRESO | EGRESO">
-                        <div class="flex text-xs">
-                            <span class="ml-auto p-1 rounded-md bg-orange-600 text-white">{{update_state ? 'ACTUALIZAR' : 'CREAR'}}</span>
-                        </div>
-                        <app-form-dynamic
-                            #form_dynamic_finanzas
-                            [inputs]="inputs_finanzas"
-                            (reset)="close_modal()"
-                            (submitEvent)="create_update_cotizacion($event)"
-                        ></app-form-dynamic>
-                    </div>
-
-                    <div id="">
+                    <div id="LISTAR FINANZAS">
                         <div class="mb-5 mt-5">
                             <h3 class="text-lg text-gray-700 font-bold"><span class="cil-money mr-2"></span> REPORTE DE FINANZAS </h3>
                     
@@ -53,6 +42,17 @@
                             (clickEmit)="$event.button.id == 2 ? handler_update_cotizacion($event.data) : handler_delete_cotizacion($event.data)"
                         ></app-datatable>
                     </div>
+                    <div id="CREAR INGRESO | EGRESO">
+                        <!-- <div class="flex text-xs">
+                            <span class="ml-auto p-1 rounded-md bg-orange-600 text-white">{{update_state ? 'ACTUALIZAR' : 'CREAR'}}</span>
+                        </div> -->
+                        <app-form-dynamic
+                            #form_dynamic_finanzas
+                            [inputs]="inputs_finanzas"
+                            (reset)="close_modal()"
+                            (submitEvent)="create_update_cotizacion($event)"
+                        ></app-form-dynamic>
+                    </div>
                 </app-tabset>
             </div>
 
@@ -64,20 +64,31 @@
                 <datalist id="datalist_inventario">
                     <option *ngFor="let inventario of datalist_inventario" value="{{inventario.title}}"></option>
                 </datalist>
-<!--             
-                <app-form-dynamic
-                    #form_dynamic
-                    [inputs]="inputs"
-                    (reset)="handler_reset()"
-                    (submitEvent)="create_or_update($event);"
-                ></app-form-dynamic>
-            
-                <app-datatable
-                    #datatable_cotizaciones
-                    [buttons]="[{icon: 'cil-pencil', text: '', id: 2}, {icon: 'cil-trash', text: '', id: 1}]"
-                    [keys]="['nombre_herramienta','referencia','marca','estado','codigo', 'estado_prestado', 'prestatario']"
-                    [titles]="['Herramienta', 'Referencia', 'Marca', 'Estado', 'codigo', 'Prestamo', 'prestatario', 'opciones']"
-                ></app-datatable> -->
+
+                <app-tabset
+                    id="cotizaciones"
+                    #tabset_cotizaciones
+                    order="flex-row-reverse"
+                    [tabs]="['LISTA COTIZACIONES', 'INGRESAR COTIZACIONES']"
+                >
+                    <div id="LISTA COTIZACIONES" class="mt-4">
+                        <app-datatable
+                            #datatable_cotizaciones
+                            [buttons]="[{icon: 'cil-pencil', text: '', id: 2}, {icon: 'cil-trash', text: '', id: 1, class: 'text-red-500'}]"
+                            [keys]="['nombre_material','cantidad','valor_unidad','createdAt']"
+                            [titles]="['material', 'cantidad', 'valor (und)', 'fecha de creación','opciones']"
+                            (clickEmit)="$event.button.id == 1 ? delete_cotizacion($event.data) : handle_update_cotizacion($event.data)"
+                        ></app-datatable>
+                    </div>
+
+                    <app-form-dynamic
+                        id="INGRESAR COTIZACIONES"
+                        #form_dynamic_cotizaciones
+                        [inputs]="inputs_cotizaciones"
+                        (reset)="close_modal(); handler_reset()"
+                        (submitEvent)="create_or_update($event);"
+                    ></app-form-dynamic>
+                </app-tabset>
             </div>
         </app-tabset>
     </div>
