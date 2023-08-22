@@ -15,7 +15,8 @@ export class LayoutComponent implements OnInit{
   public navItems:any[] = [
     {icon: 'cil-home', title: 'Inicio', notifications: false, url: '/home'},
     {icon: 'cil-people', title: 'Usuarios', notifications: false, url: '/users'},
-    {icon: 'cil-laptop', title: 'Proyectos', notifications: 5, url: '/proyects'},
+    {icon: 'cil-laptop', title: 'Proyectos', notifications: 0, url: '/proyects'},
+    {icon: 'cil-truck', title: 'Despachos', notifications: 0, url: '/despachos'},
     {icon: 'cil-book', title: 'Inventario', notifications: 0, url: '/inventario'},
     {icon: 'cil-baseball', title: 'Herramientas', notifications: 0, url: '/herramientas'},
   ];

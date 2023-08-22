@@ -8,9 +8,8 @@ import { BehaviorSubject } from 'rxjs';
 })
 
 export class DatatableComponent implements OnInit{
-
-  
   private data:any[] = [];
+  public once:boolean = true;
   @Input() buttons:any[] = [];
   @Input() keys:any[string] = [];
   public search_input:string = '';
@@ -23,7 +22,7 @@ export class DatatableComponent implements OnInit{
     this.clickEmit.emit(event);
   }
 
-  public search():void{
+  public search():void{    
     this.renderData?.next(
       this.data.filter((element:any) => {
         return Object.entries(element).map(([key, value]: [string, any]) => (value != null || value != undefined ) && value.toString().toLocaleLowerCase().trim().includes(this.search_input.toLocaleLowerCase().trim())).some(item => item)
@@ -32,14 +31,17 @@ export class DatatableComponent implements OnInit{
   }
 
   ngOnInit(): void {
-    // this.renderData.next(this.data);
+    this.renderData?.subscribe((value:any[])=> {
+      if(this.once && value.length >= 1){
+        this.data = value;
+        this.once = false;
+      }
 
-    this.renderData.subscribe((value:any)=> {
       if(!this.load_component) {this.data = value; this.load_component = true};
       document.querySelectorAll('#datatable-body').forEach((value)=>{
         value?.classList.add('animation-datatable');
         setTimeout(() => {value?.classList.remove('animation-datatable')}, 2000);
-      })
+      });
     })
   }
 }

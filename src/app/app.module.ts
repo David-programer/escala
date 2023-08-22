@@ -16,11 +16,12 @@ import { IconModule, IconSetModule, IconSetService } from '@coreui/icons-angular
 import { FormDynamicComponent } from './components/form-dynamic/form-dynamic.component';
 import { ProyectsComponent } from './views/proyects/proyects.component';
 import { InventarioComponent } from './views/inventario/inventario.component';
-import { CreateComponent } from './views/proyects/create/create.component';
 import { HerramientasComponent } from './views/herramientas/herramientas.component';
 import { ModalComponent } from './components/modal/modal.component';
 import { TabsetComponent } from './components/tabset/tabset.component';
 import { AlertComponent } from './components/alert/alert.component';
+import { DespachosComponent } from './views/despachos/despachos.component';
+import { FinanzasComponent } from './views/proyects/finanzas/finanzas.component';
 
 
 @NgModule({
@@ -35,11 +36,12 @@ import { AlertComponent } from './components/alert/alert.component';
     FormDynamicComponent,
     ProyectsComponent,
     InventarioComponent,
-    CreateComponent,
     HerramientasComponent,
     ModalComponent,
     TabsetComponent,
     AlertComponent,
+    DespachosComponent,
+    FinanzasComponent,
   ],
   imports: [
     BrowserModule,

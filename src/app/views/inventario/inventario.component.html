@@ -20,6 +20,8 @@
         (submitEvent)="createUpdateInventario($event)"
     ></app-form-dynamic>
 
+    <br>
+
     <app-datatable
         #datatableInventario
 <<<<<<< HEAD
@@ -33,8 +35,8 @@
 =======
         (clickEmit)="handlerEdith($event.data)"
         [buttons]="[{icon: 'cil-pencil', text: '', id: 2}]"
-        [keys]="['nombre_material', 'cantidad', 'valor_unidad', 'unidades']"
-        [titles]="['material', 'cantidad', 'valor', 'tipo', 'opciones']"
+        [keys]="['nombre_material', 'cantidad', 'cantidad_min', 'valor_unidad', 'unidades']"
+        [titles]="['material', 'stock', 'stock mínimo', 'valor', 'tipo', 'opciones']"
     ></app-datatable>
 </div>
 

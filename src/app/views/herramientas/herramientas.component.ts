@@ -5,10 +5,8 @@ import { FormDynamicComponent } from 'src/app/components/form-dynamic/form-dynam
 import { ModalComponent } from 'src/app/components/modal/modal.component';
 import { TabsetComponent } from 'src/app/components/tabset/tabset.component';
 import { FormControl, Validators } from '@angular/forms';
-<<<<<<< HEAD
-=======
 import { AlertComponent } from 'src/app/components/alert/alert.component';
->>>>>>> dbb364b1fecdf211d4f02f3e3074bc0c813894fa
+import { GlobalUtil } from 'src/app/utils/global.util';
 
 @Component({
   selector: 'app-herramientas',
@@ -18,7 +16,7 @@ import { AlertComponent } from 'src/app/components/alert/alert.component';
 
 export class HerramientasComponent implements OnInit {
 
-  constructor(private _globalService: GlobalService){}
+  constructor(private _globalService: GlobalService, private _globalUtil: GlobalUtil){}
 
   public inputs:any[] = [];
   public tabset:string = 'FILTRAR';
@@ -31,10 +29,7 @@ export class HerramientasComponent implements OnInit {
   public closeLoading = {count_request: 0, total_request: 2};
 
   @ViewChild('form_dynamic') form_dynamic:FormDynamicComponent | null = null;
-<<<<<<< HEAD
-=======
   @ViewChild('alert_herramientas') alert_herramientas:AlertComponent | null = null;
->>>>>>> dbb364b1fecdf211d4f02f3e3074bc0c813894fa
   @ViewChild('modal_herramientas') modal_herramientas:ModalComponent | null = null;
   @ViewChild('tabsetHerramientas') tabsetHerramientas:TabsetComponent | null = null;
   @ViewChild('datatablePrestamos') datatablePrestamos:DatatableComponent | null = null;
@@ -58,24 +53,16 @@ export class HerramientasComponent implements OnInit {
           );
         }else this.datatableHerramientas?.renderData?.next([...response.data, ...this.datatableHerramientas?.renderData?.getValue() ?? []]);
 
-        this.state_edith = false;
-<<<<<<< HEAD
-        this.form_dynamic?.form_group.reset();
-      }
-      this.loading = false;
-=======
         this.alert_herramientas?.open_alert('¡Se ha realizado la operación con éxito!');
         this.form_dynamic?.form_group.reset();
+        this.handler_reset();
       }else {
-        console.log('¡Ingresa los valores correctamente!');
-        
         this.alert_herramientas?.open_alert(response.error ?? '¡Ingresa los valores correctamente!');
       }
       
       this.loading = false;
       // this.state_edith = false;
       this.alert_herramientas?.close_alert(10000);
->>>>>>> dbb364b1fecdf211d4f02f3e3074bc0c813894fa
     });
   }
 
@@ -92,32 +79,41 @@ export class HerramientasComponent implements OnInit {
     this._globalService.post_service('/herramienta/insert_prestamo', body).subscribe({
       next: (response:any)=>{
         if(response.successful){
+          let new_response = response.data[0];
+          new_response.fec_prestamo = new_response.fec_prestamo.split(' ')[0]
           let formulario:any = this.form_dynamic_prestamos?.form_group.controls;
+
           if(formulario['id']){
-            let new_data:any[] = this.datatablePrestamos?.renderData.getValue().map(item => response.data[0].id == item.id ?  response.data[0] : item) ?? [];
+            let new_data:any[] = this.datatablePrestamos?.renderData.getValue().map(item => new_response.id == item.id ? new_response : item) ?? [];
             this.datatablePrestamos?.renderData.next(new_data);
             this.datatableHerramientas?.renderData.next(
               this.datatableHerramientas?.renderData.getValue().map(item => {
-                if(item.id == this.data_modal.id) item.prestamos = new_data;
+                if(item.id == this.data_modal.id) {
+                  item.prestamos = new_data;
+                  item.estado_prestado = new_response.tipo_prestamo == "Prestamo" ? "Prestado" : "Libre";
+                  item.prestatario = new_response.tipo_prestamo == "Prestamo" ? new_response.nombre_completo : '';
+                }
                 return item
               })
             );
           } else {
-            this.data_modal.prestamos.unshift(response.data[0]);
-            this.datatableHerramientas?.renderData.next(this.datatableHerramientas?.renderData.getValue().map(item =>item.id ==  this.data_modal.id ? this.data_modal : item));
+            this.data_modal.prestamos 
+            ? this.data_modal.prestamos.unshift(new_response)
+            : this.data_modal.prestamos = [new_response];
+
+            this.data_modal.estado_prestado = new_response.tipo_prestamo == "Prestamo" ? "Prestado" : "Libre";
+            this.data_modal.prestatario = new_response.tipo_prestamo == "Prestamo" ? new_response.nombre_completo : '';
+
+            this.datatablePrestamos?.renderData.next(this.data_modal.prestamos)
           }
           
           this.tabsetHerramientas?.handler_change_tab('FILTRAR');
           this.form_dynamic_prestamos?.form_group.reset();
-<<<<<<< HEAD
-        }
-=======
-          this.alert_herramientas?.open_alert(response.message ?? '!');
+          this.alert_herramientas?.open_alert(response.message ?? '¡Se realizó la acción correctamente!');
 
-        }else this.alert_herramientas?.open_alert(response.error ?? '!Error al realizar la acción!');
+        }else this.alert_herramientas?.open_alert(response.error ?? '¡Error al realizar la acción!');
 
         this.alert_herramientas?.close_alert(10000);
->>>>>>> dbb364b1fecdf211d4f02f3e3074bc0c813894fa
         this.loading = false;
       }
     });
@@ -131,6 +127,12 @@ export class HerramientasComponent implements OnInit {
     this.scrollTo('toltipo-info');
     this.id_update = data.id;
     this.state_edith = true;
+  }
+
+  public handler_reset():any{
+    this.state_edith = false;
+    let controls:any = this.form_dynamic?.form_group.controls
+    controls['codigo'].setValue(this._globalUtil.generateRandomCode())
   }
 
   public delete():void{
@@ -168,11 +170,11 @@ export class HerramientasComponent implements OnInit {
         title: 'DATOS BÁSICOS',
         description: 'Información básica del activo a registrar',
         inputs: [
-          {value: null, name: 'nombre_herramienta', icon: 'cil-baseball', label: 'Herramienta', attributes: {type: 'text'}},
-          {value: null, name: 'referencia', icon: 'cil-barcode', label: 'Referencia', attributes: {type: 'text'}},
-          {value: null, name: 'marca', icon: 'cil-barcode', label: 'Marca', attributes: {type: 'text'}},
-          {value: null, name: 'estado', icon: 'cil-notes', label: 'Estado', attributes: {type: 'text', list: 'datalist_estados'}},
-          {value: null, name: 'codigo', icon: 'cil-notes', label: 'Código', attributes: {type: 'text'}},
+          {value: null, name: 'nombre_herramienta', icon: 'cil-baseball', label: 'Herramienta', attributes: {type: 'text'}, validators: ['required'],},
+          {value: null, name: 'referencia', icon: 'cil-barcode', label: 'Referencia', attributes: {type: 'text'}, validators: ['required'],},
+          {value: null, name: 'marca', icon: 'cil-barcode', label: 'Marca', attributes: {type: 'text'}, validators: ['required'],},
+          {value: null, name: 'estado', icon: 'cil-notes', label: 'Estado', attributes: {type: 'text', list: 'datalist_estados'}, validators: ['required'],},
+          {value: this._globalUtil.generateRandomCode(), name: 'codigo', icon: 'cil-notes', label: 'Código', attributes: {type: 'text'}, validators: ['required'],},
         ]
       },
     ];
@@ -182,117 +184,37 @@ export class HerramientasComponent implements OnInit {
         title: 'PRESTAMOS',
         description: 'Datos básicos del prestamo',
         inputs: [
-          {value: null, name: 'id_user', icon: 'cil-user', label: 'Colaborador (prestatario)', attributes: {type: 'text', list: 'datalist_user'}},
-          {value: null, name: 'tipo_prestamo', icon: 'cil-color-border', label: 'Tipo', attributes: {type: 'text', list: 'datalist_tipo_prestamo'}},
-          {value: null, name: 'observacion', icon: 'cil-notes', label: 'Observación', attributes: {type: 'text'}},
-          {value: null, name: 'fec_prestamo', icon: 'cil-calendar', label: 'Fecha del prestamo', attributes: {type: 'date'}},
+          {value: null, name: 'id_user', icon: 'cil-user', label: 'Colaborador (prestatario)', attributes: {type: 'text', list: 'datalist_user'}, validators: ['required']},
+          {value: null, name: 'tipo_prestamo', icon: 'cil-color-border', label: 'Tipo', attributes: {type: 'text', list: 'datalist_tipo_prestamo'}, validators: ['required']},
+          {value: null, name: 'observacion', icon: 'cil-notes', label: 'Observación', attributes: {type: 'text'}, validators: ['required']},
+          {value: null, name: 'fec_prestamo', icon: 'cil-calendar', label: 'Fecha del prestamo', attributes: {type: 'date'}, validators: ['required']},
         ]
       },
     ];
 
     this._globalService.get_service('/herramienta/lista_herramientas').subscribe((response:any)=>{
       if(response.successful){
-        this.datatableHerramientas?.renderData?.next(response.data);
+        this.datatableHerramientas?.renderData?.next(response.data.map((item:any) =>{
+          item.prestamos.forEach((prestamo:any) => {
+            prestamo.fec_prestamo = prestamo.fec_prestamo.split(' ')[0]
+          });
+
+          if(item.prestamos.length >= 1){
+            const ultimoPrestamo = item.prestamos[0];
+            item.estado_prestado = ultimoPrestamo.tipo_prestamo == "Prestamo" ? "Prestado" : "Libre";
+            item.prestatario = ultimoPrestamo.tipo_prestamo == "Prestamo" ? ultimoPrestamo.nombre_completo : '';
+          }else item.estado_prestado = 'Libre';
+          
+          return item
+        }));
       }
       this.loading = false;
-    })
+    });
 
     this._globalService.get_service('/user/lista_users?id=').subscribe({
       next: (response:any)=>{
-        if(response.successful) this.list_users = response.data;
-<<<<<<< HEAD
-        console.log(response);
-=======
->>>>>>> dbb364b1fecdf211d4f02f3e3074bc0c813894fa
+        if(response.successful) this.list_users = response.data.filter((user:any) => user.rol_name == 'Colaborador');
       }
-    })
-
-    // setTimeout(() => {
-    // let response = {
-    //   "successful": true,
-    //   "data": [
-    //       {
-    //           "id": 1,
-    //           "nombre_herramienta": "Martillo",
-    //           "referencia": "prueba",
-    //           "marca": "gato",
-    //           "estado": "Nuevo",
-    //           "codigo": "MA_001",
-    //           "createdAt": null,
-    //           "updatedAt": null,
-    //           "prestamos": [
-    //               {
-    //                   "id": 4,
-    //                   "id_herramienta": 1,
-    //                   "id_user": 2,
-    //                   "tipo_prestamo": "Devolucion",
-    //                   "observacion": "nada v3",
-    //                   "fec_prestamo": "2023-01-03 00:00:00.000 +00:00",
-    //                   "createdAt": "2023-04-22 17:08:32.205 +00:00",
-    //                   "updatedAt": "2023-04-22 17:21:50.792 +00:00",
-    //                   "nombre_completo": "adasfddgfadgf"
-    //               },
-    //               {
-    //                   "id": 3,
-    //                   "id_herramienta": 1,
-    //                   "id_user": 2,
-    //                   "tipo_prestamo": "Prestamo",
-    //                   "observacion": "nada v2",
-    //                   "fec_prestamo": "2023-01-03 00:00:00.000 +00:00",
-    //                   "createdAt": "2023-04-17 17:57:03.805 +00:00",
-    //                   "updatedAt": "2023-04-17 17:57:21.504 +00:00",
-    //                   "nombre_completo": "adasfddgfadgf"
-    //               },
-    //               {
-    //                   "id": 2,
-    //                   "id_herramienta": 1,
-    //                   "id_user": 2,
-    //                   "tipo_prestamo": "Devolicion",
-    //                   "observacion": "ninguna",
-    //                   "fec_prestamo": "2023-03-03",
-    //                   "createdAt": null,
-    //                   "updatedAt": null,
-    //                   "nombre_completo": "adasfddgfadgf"
-    //               },
-    //               {
-    //                   "id": 1,
-    //                   "id_herramienta": 1,
-    //                   "id_user": 1,
-    //                   "tipo_prestamo": "Prestamo",
-    //                   "observacion": "ninguna",
-    //                   "fec_prestamo": "2023-02-22",
-    //                   "createdAt": null,
-    //                   "updatedAt": null,
-    //                   "nombre_completo": "adasfddgfadgf"
-    //               }
-    //           ]
-    //       },
-    //       {
-    //           "id": 2,
-    //           "nombre_herramienta": "taladro",
-    //           "referencia": "",
-    //           "marca": "",
-    //           "estado": "Nuevo",
-    //           "codigo": "CE_001",
-    //           "createdAt": "2023-04-17 05:20:51.261 +00:00",
-    //           "updatedAt": "2023-04-17 05:21:27.758 +00:00",
-    //           "prestamos": []
-    //       },
-    //       {
-    //           "id": 3,
-    //           "nombre_herramienta": "taladro3",
-    //           "referencia": "fer0002",
-    //           "marca": "waller",
-    //           "estado": "Nuevo",
-    //           "codigo": "CE_003",
-    //           "createdAt": "2023-04-22 16:21:01.454 +00:00",
-    //           "updatedAt": "2023-04-22 16:27:48.023 +00:00",
-    //           "prestamos": []
-    //       }
-    //   ]
-    // };
-    //   this.datatableHerramientas?.renderData?.next(response.data);
-    //   this.loading = false;
-    // }, 500);
+    });
   }
 }

@@ -8,6 +8,7 @@ import { UsersComponent } from './views/users/users.component';
 import { ProyectsComponent } from './views/proyects/proyects.component';
 import { InventarioComponent } from './views/inventario/inventario.component';
 import { HerramientasComponent } from './views/herramientas/herramientas.component';
+import { DespachosComponent } from './views/despachos/despachos.component';
 
 const routes: Routes = [
   { path: '', redirectTo: 'login', pathMatch: 'full'},
@@ -19,9 +20,11 @@ const routes: Routes = [
     children: [
       { path: 'home',component: HomeComponent, data: { title: 'Inicio' } },
       { path: 'users',component: UsersComponent, data: { title: 'Usuarios' } },
-      { path: 'proyects',component: ProyectsComponent, data: { title: 'Proyectos' } },
       { path: 'inventario',component: InventarioComponent, data: { title: 'Inventario' } },
       { path: 'herramientas',component: HerramientasComponent, data: { title: 'Herramientas' } },
+      { path: 'proyects',component: ProyectsComponent, data: { title: 'Proyectos' } },
+      { path: 'despachos',component: DespachosComponent, data: { title: 'Despachos' } },
+      { path: 'despachos/:id',component: DespachosComponent, data: { title: 'Despachos' } },
      ]
   },
 ];

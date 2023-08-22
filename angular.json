@@ -3,7 +3,7 @@
   "version": 1,
   "newProjectRoot": "projects",
   "projects": {
-    "escala": {
+    "Aescala": {
       "projectType": "application",
       "schematics": {},
       "root": "",
@@ -61,10 +61,10 @@
           "builder": "@angular-devkit/build-angular:dev-server",
           "configurations": {
             "production": {
-              "browserTarget": "escala:build:production"
+              "browserTarget": "Aescala:build:production"
             },
             "development": {
-              "browserTarget": "escala:build:development"
+              "browserTarget": "Aescala:build:development"
             }
           },
           "defaultConfiguration": "development"
@@ -72,7 +72,7 @@
         "extract-i18n": {
           "builder": "@angular-devkit/build-angular:extract-i18n",
           "options": {
-            "browserTarget": "escala:build"
+            "browserTarget": "Aescala:build"
           }
         },
         "test": {

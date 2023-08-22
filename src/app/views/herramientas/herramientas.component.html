@@ -24,21 +24,22 @@
     <app-form-dynamic
         #form_dynamic
         [inputs]="inputs"
-        (reset)="this.state_edith = false"
+        (reset)="handler_reset()"
         (submitEvent)="create_or_update($event);"
     ></app-form-dynamic>
 
     <app-datatable
         #datatableHerramientas
         [buttons]="[{icon: 'cil-pencil', text: '', id: 2}, {icon: 'cil-user-follow', text: '', id: 1}]"
-        [keys]="['nombre_herramienta','referencia','marca','estado','codigo']"
-        [titles]="['Herramienta', 'Referencia', 'Marca', 'Estado', 'codigo', 'opciones']"
+        [keys]="['nombre_herramienta','referencia','marca','estado','codigo', 'estado_prestado', 'prestatario']"
+        [titles]="['Herramienta', 'Referencia', 'Marca', 'Estado', 'codigo', 'Prestamo', 'prestatario', 'opciones']"
         (clickEmit)="$event.button.id == 2 ? load_update($event.data) : open_modal($event.data)"
     ></app-datatable>
 </div>
 
 <app-modal #modal_herramientas>
     <app-tabset
+        id="Herramientas"
         #tabsetHerramientas
         [tabs]="['FILTRAR', 'CREAR']"
     >

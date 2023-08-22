@@ -11,7 +11,7 @@ const createWindow = ()=>{
     appWin = new BrowserWindow({
         width,
         height,
-        title: "ESCALA",
+        title: "Aescala",
         resizable: false,
         webPreferences: {
             contextIsolation: false,
@@ -27,21 +27,12 @@ const createWindow = ()=>{
     }
     
     appWin.webContents.openDevTools();
-<<<<<<< HEAD
-    appWin.setMenu(null);
-
-=======
     
     // appWin.webContents.on('os-storage-comunication', (message)=>{
     // })
 
     appWin.setMenu(null);
 
-    // setTimeout(() => {
-    //     appWin.webContents.send('os-storage-comunication', 'Hablame manito');
-    // }, 5000);
-
->>>>>>> dbb364b1fecdf211d4f02f3e3074bc0c813894fa
     appWin.on("closed", () => {
         appWin = null;
     });
