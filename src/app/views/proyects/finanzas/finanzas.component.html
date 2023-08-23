@@ -68,8 +68,9 @@
                 <app-tabset
                     id="cotizaciones"
                     #tabset_cotizaciones
+                    (changeTab)="getComparativo($event)"
                     order="flex-row-reverse"
-                    [tabs]="['LISTA COTIZACIONES', 'INGRESAR COTIZACIONES']"
+                    [tabs]="['LISTA COTIZACIONES', 'INGRESAR COTIZACIONES', 'COMPARATIVO']"
                 >
                     <div id="LISTA COTIZACIONES" class="mt-4">
                         <app-datatable
@@ -88,6 +89,14 @@
                         (reset)="close_modal(); handler_reset()"
                         (submitEvent)="create_or_update($event);"
                     ></app-form-dynamic>
+
+                    <div id="COMPARATIVO">
+                        <app-datatable
+                            #datatable_comparativo
+                            [keys]="['nombre_material','cant_cotizacion','cant_despachos']"
+                            [titles]="['material', 'cotizaciones', 'despachos']"
+                        ></app-datatable>
+                    </div>
                 </app-tabset>
             </div>
         </app-tabset>

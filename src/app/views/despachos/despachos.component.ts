@@ -3,6 +3,7 @@ import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
 import { AlertComponent } from 'src/app/components/alert/alert.component';
 import { GlobalService } from 'src/app/services/global.service';
+import { GlobalUtil } from 'src/app/utils/global.util';
 
 @Component({
   templateUrl: './despachos.component.html',
@@ -10,7 +11,7 @@ import { GlobalService } from 'src/app/services/global.service';
 })
 export class DespachosComponent implements OnInit{
 
-  constructor(private _globalService: GlobalService,private route: ActivatedRoute){}
+  constructor(private _globalService: GlobalService, private _globalUtil: GlobalUtil){}
 
   public loading:boolean = true;
   public datalist_users:any[] = [];
@@ -28,7 +29,7 @@ export class DespachosComponent implements OnInit{
     data: new FormControl([]),
     inventario_selected: new FormControl(''),
     tipo: new FormControl('', Validators.required),
-    codigo: new FormControl('', Validators.required),
+    codigo: new FormControl(this._globalUtil.generateRandomCode(), Validators.required),
     id_user: new FormControl('', Validators.required),
     id_proyecto: new FormControl('', Validators.required),
   });
@@ -79,10 +80,11 @@ export class DespachosComponent implements OnInit{
 
     Object.keys(this.form_despachos.controls).forEach((key:string) => {
       let element = document.getElementById(`input-${key}`);
-
       element?.classList.remove('valid', 'border-green-500');
       element?.classList.remove('invalid','border-red-500');
     });
+
+    this.form_despachos.controls.codigo.setValue(this._globalUtil.generateRandomCode());
   }
 
   public create_or_update_despachos():void{

@@ -197,7 +197,8 @@ export class ProyectsComponent implements OnInit{
       next: (response:any)=>{
         if(response.successful){
           let new_data = response.data[0];
-          new_data.porcentaje = `${Number(new_data.porcentaje)}%`
+          new_data.porcentaje_number = Number(new_data.porcentaje);
+          new_data.porcentaje = `${new_data.porcentaje_number >= 100 ? 100 : new_data.porcentaje_number}%`
           new_data.fec_fin = new_data.fec_fin.split(' ')[0];
           new_data.fec_inicio = new_data.fec_inicio.split(' ')[0];
           
@@ -233,13 +234,12 @@ export class ProyectsComponent implements OnInit{
           element.classList.add('scale-100');
   
           if(response.successful) proyect.tareas = response.data.map((item:any) => {
-            item.porcentaje = `${Number(item.porcentaje) >= 100 ? 100 : Number(item.porcentaje)}%`;
+            item.porcentaje_number = Number(item.porcentaje);
+            item.porcentaje = `${item.porcentaje_number >= 100 ? 100 : item.porcentaje_number}%`;
             item.fec_inicio = item.fec_inicio.split(' ')[0];
             item.fec_fin = item.fec_fin ? item.fec_fin?.split(' ')[0] : null;
             return item
           });
-
-          console.log(response.data);
 
           this.loading = false;
         }
@@ -408,7 +408,6 @@ export class ProyectsComponent implements OnInit{
         if(response.successful){
           this.data_inventario = response.data.map((item:any) => {
             item.materiales = item.materiales.map((material:any) =>{
-              console.log(material.createdAt);
               material.createdAt = material.createdAt?.split(' ')[0];
               return material
             })
@@ -416,7 +415,6 @@ export class ProyectsComponent implements OnInit{
           });
 
           this.modal_inventario?.open_modal();
-          console.log(this.data_inventario);
         }
 
         this.loading = false;

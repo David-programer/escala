@@ -71,8 +71,8 @@
                         formControlName="inventario_selected"
                         class="w-full block text-sm py-1.5 px-4 rounded-lg  border outline-none"
                     >
-                    <option *ngFor="let inventario of datalist_inventario" value="{{inventario.id}}">{{inventario.nombre_material}}</option>
-                    <option *ngFor="let inventario of datalist_inventario" value="null">Sin inventario</option>
+                        <option *ngFor="let inventario of datalist_inventario" value="{{inventario.id}}">{{inventario.nombre_material}}</option>
+                        <option value="null">Sin inventario</option>
                     </select>
                     <span *ngIf="input_select_inventario.classList.contains('invalid')" class="rounded-b-md rounded-l-md bg-red-600 text-white p-1 text-[.6rem] absolute -bottom-5 right-0"><span class="cil-warning mr-1"></span> ¡Incorrecto!</span>
                 </div>

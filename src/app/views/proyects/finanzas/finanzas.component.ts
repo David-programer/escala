@@ -23,11 +23,12 @@ export class FinanzasComponent {
   @Input() datalist_proyects:any[] = [];
   public state_edith_cotizaciones:boolean = false;
   @Output() closeModal = new EventEmitter<any>();
-  public closeLoading = {count_request: 0, total_request: 3};
+  public closeLoading = {count_request: 0, total_request: 2};
   @ViewChild('alert_finanzas') alert_finanzas:AlertComponent | null = null;
   @ViewChild('tabset_ingreso_egreso') tabset_finanzas:TabsetComponent | null = null;
   @ViewChild('tabset_cotizaciones') tabset_cotizaciones:TabsetComponent | null = null;
   @ViewChild('datatable_finanzas') datatable_finanzas:DatatableComponent | null = null;
+  @ViewChild('datatable_comparativo') datatable_comparativo:DatatableComponent | null = null;
   @ViewChild('form_dynamic_finanzas') form_dynamic_finanzas:FormDynamicComponent | null = null;
   @ViewChild('datatable_cotizaciones') datatable_cotizaciones:DatatableComponent | null = null;
   @ViewChild('form_dynamic_cotizaciones') form_dynamic_cotizaciones:FormDynamicComponent | null = null;
@@ -60,9 +61,25 @@ export class FinanzasComponent {
     this.proyecto = proyecto;    
     this.datatable_finanzas?.renderData.next(proyecto?.finanzas?.map((item:any)=> this.format_element(item)));
 
-    console.log(this.datalist_proyects);
     this.get_services();
   };
+
+  public getComparativo(event:string):void{
+    if(event.trim() == "COMPARATIVO"){
+      this.loading = true;
+      this._globalService.get_service(`/cotizacion/comparativo_cotixentregas?id=${this.proyecto.id}`).subscribe({
+        next: (response:any)=>{
+          this.datatable_comparativo?.renderData.next(response.data.map((item:any) => {
+            item.cant_despachos = Number(item.cant_despachos);
+            item.cant_cotizacion = Number(item.cant_cotizacion);
+            item.styleClassTr = item.cant_despachos >= item.cant_cotizacion ? 'bg-orange-200' : '';
+            return item;
+          }));
+          this.loading = false;
+        }
+      })
+    }
+  }
 
   public handler_reset():void{
     this.id_cotizacion = '';
@@ -201,13 +218,6 @@ export class FinanzasComponent {
     });
 
     //COTIZACIONES
-    this._globalService.get_service('/cotizacion/comparativo_cotixentregas?id=').subscribe({
-      next: (response:any)=>{
-        console.log(response);
-        this.close_loading();
-      }
-    });
-
     this._globalService.get_service(`/cotizacion/lista_cotizacion?id=${this.proyecto.id}`).subscribe({
       next: (response:any)=> {
         if(response.successful){

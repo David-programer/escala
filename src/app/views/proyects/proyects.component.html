@@ -144,8 +144,8 @@
                                         </div>
                                         <p class="text-xs">{{tarea.descripccion}}</p>
     
-                                        <div class="mt-4 w-full bg-gray-200 rounded-full h-1.5 dark:bg-gray-700">
-                                            <div class="bg-blue-600 h-1.5 rounded-full dark:bg-blue-500" style="width: 50%;" [ngStyle]="{'width': tarea.porcentaje}"></div>
+                                        <div class="mt-4 w-full bg-gray-200 rounded-full h-1.5 dark:bg-gray-700 ">
+                                            <div [ngClass]="{'bg-red-500': tarea.porcentaje_number <= 30, 'bg-orange-500': tarea.porcentaje_number >= 30 && tarea.porcentaje_number <= 80, 'bg-blue-500': tarea.porcentaje >= 90}" class="bg-green-500 h-1.5 rounded-full" style="width: 50%;" [ngStyle]="{'width': tarea.porcentaje}"></div>
                                         </div>
     
                                         <div class="flex text-xs mt-1">

@@ -30,18 +30,17 @@ export class InventarioComponent implements OnInit {
 
     this._globalService.post_service('/inventario_material/insert_inventario_material', {...data, id: this.id_update}).subscribe((response:any)=>{
       if(response.successful){
-        if(this.state_edith){
-          this.datatableInventario?.renderData.next(
-            this.datatableInventario?.renderData.getValue().map(item => item.id == this.id_update ? response.data[0] : item)
-          )
-        }else this.datatableInventario?.renderData?.next([response.data[0], ...this.datatableInventario?.renderData.getValue()]);
+        let new_value = response.data[0], new_data:any = [];
+        new_value.styleClassTr = new_value.cantidad <= new_value.cantidad_min ? 'bg-orange-200' : '';
+
+        if(this.state_edith) new_data = this.datatableInventario?.renderData.getValue().map(item => item.id == this.id_update ? new_value : item);
+        else new_data = [new_value, ...this.datatableInventario?.renderData.getValue() ?? []];
 
         this.form_dynamic?.form_group.reset();
+        this.datatableInventario?.renderData.next(new_data);
         this.alert_inventario?.open_alert('¡Se ha realizado la operación con éxito!');
       }else this.alert_inventario?.open_alert(response.error ?? '¡Ingresa los valores correctamente!');
       
-      console.log(response)
-
       this.id_update = '';
       this.loading = false;
       this.state_edith = false;
@@ -52,12 +51,11 @@ export class InventarioComponent implements OnInit {
   public handlerEdith(data:any):void{
     this.state_edith = true;
 
-    let {id, cantidad, nombre_material, valor_unidad, descripccion, id_unidad} = data;
-    id_unidad = this.list_unidades.find(item => item.id == data.id_unidad)?.unidades;
-
+    let {id, cantidad, nombre_material, valor_unidad, descripccion, id_unidad, cantidad_min} = data;
+    id_unidad = this.list_unidades.find(item => item.id == id_unidad)?.id;
     this.id_update = id;
 
-    this.form_dynamic?.form_group.setValue({cantidad, nombre_material, valor_unidad, descripccion, id_unidad})
+    this.form_dynamic?.form_group.setValue({cantidad_min, cantidad, nombre_material, valor_unidad, descripccion, id_unidad})
    
     this.scrollTo();
   }
@@ -107,7 +105,10 @@ export class InventarioComponent implements OnInit {
     this._globalService.get_service('/inventario_material/lista_inventario_material?id=').subscribe({
       next: (response:any)=>{
         if(response.successful){
-          this.datatableInventario?.renderData?.next(response.data);
+          this.datatableInventario?.renderData?.next(response.data.map((item:any) => {
+            item.styleClassTr = item.cantidad <= item.cantidad_min ? 'bg-orange-200' : '';
+            return item;
+          }));
         }
         this.close_loading();
       },
