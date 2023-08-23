@@ -27,7 +27,6 @@ export class InventarioComponent implements OnInit {
   public createUpdateInventario(data:any):void{
     this.loading = true;
     data.id_unidad = this.list_unidades.find(item => item.unidades == data.id_unidad)?.id;
-
     this._globalService.post_service('/inventario_material/insert_inventario_material', {...data, id: this.id_update}).subscribe((response:any)=>{
       if(response.successful){
         let new_value = response.data[0], new_data:any = [];
@@ -52,7 +51,7 @@ export class InventarioComponent implements OnInit {
     this.state_edith = true;
 
     let {id, cantidad, nombre_material, valor_unidad, descripccion, id_unidad, cantidad_min} = data;
-    id_unidad = this.list_unidades.find(item => item.id == id_unidad)?.id;
+    id_unidad = this.list_unidades.find(item => item.id == id_unidad)?.unidades;
     this.id_update = id;
 
     this.form_dynamic?.form_group.setValue({cantidad_min, cantidad, nombre_material, valor_unidad, descripccion, id_unidad})
