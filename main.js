@@ -26,7 +26,7 @@ const createWindow = ()=>{
         appWin.loadURL(`file://${__dirname}/dist/index.html`);
     }
     
-    appWin.webContents.openDevTools();
+    // appWin.webContents.openDevTools();
     // appWin.webContents.on('os-storage-comunication', (message)=>{
     // })
 

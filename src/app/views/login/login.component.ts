@@ -33,8 +33,8 @@ export class LoginComponent implements OnInit {
   @ViewChild('alert_users') alert_users:AlertComponent | null = null;
 
   public formulario = new FormGroup({
-    'pass' : new FormControl('admin2023', [Validators.required]),
-    'correo' : new FormControl('admin@gmail.com',[Validators.required, Validators.email])
+    'pass' : new FormControl('', [Validators.required]),
+    'correo' : new FormControl('',[Validators.required, Validators.email])
   })
 
   public login():void{
