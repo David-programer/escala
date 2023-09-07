@@ -86,9 +86,9 @@ export class InventarioComponent implements OnInit {
         inputs: [
           {value: null, name: 'nombre_material', icon: 'cil-user', label: 'Material', attributes: {type: 'text'}, validators: ['required']},
           {value: null, name: 'id_unidad', icon: 'cil-barcode', label: 'Tipo', attributes: {type: 'text', list:"datalist_unidades"}, validators: ['required']},
-          {value: null, name: 'cantidad', icon: 'cil-barcode', label: 'Cantidad', attributes: {type: 'number'}, validators: ['required']},
-          {value: null, name: 'cantidad_min', icon: 'cil-money', label: 'Cantidad mínima', attributes: {type: 'number'}, validators: ['required']},
-          {value: null, name: 'valor_unidad', icon: 'cil-money', label: 'Valor por unidad', attributes: {type: 'number'}, validators: ['required']},
+          {value: null, name: 'cantidad', icon: 'cil-barcode', label: 'Cantidad', money: true, attributes: {type: 'text'}, validators: ['required']},
+          {value: null, name: 'cantidad_min', icon: 'cil-money', label: 'Cantidad mínima', money: true, attributes: {type: 'text'}, validators: ['required']},
+          {value: null, name: 'valor_unidad', icon: 'cil-money', label: 'Valor por unidad', money: true, attributes: {type: 'text'}, validators: ['required']},
           {value: null, name: 'descripccion', icon: 'cil-notes', label: 'Descripción', attributes: {type: 'text'}},
         ]
       },

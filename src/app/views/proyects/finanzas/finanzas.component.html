@@ -7,7 +7,8 @@
     <div>
         <app-tabset
             id="finanzas"
-            [tabs]="['INGRESO | EGRESO', 'COTIZACIONES']"
+            (changeTab)="validateChangeTabEstado($event)"
+            [tabs]="['INGRESO | EGRESO', 'COTIZACIONES', 'ESTADO DEL PROYECTO']"
         >
             <div id="INGRESO | EGRESO">
                 <app-tabset
@@ -98,6 +99,71 @@
                         ></app-datatable>
                     </div>
                 </app-tabset>
+            </div>
+
+            <div id="ESTADO DEL PROYECTO">
+                <div class="flex gap-3 flex-col">
+                    <div class="w-full">
+                        <div class="bg-slate-50 rounded flex justify-evenly p-2 mt-4">
+                            <h2 class="text-base"> <span class="cil-truck mr-1"></span> MATERIALES</h2>
+                            <div class="ml-auto flex gap-3">
+                                <p [ngClass]="{'text-red-500': proyecto.total_actual < 0}"><span class="cil-factory mr-2"></span>Actual: {{proyecto.total_actual | currency:'':'symbol':'1.0-0'}}</p>
+                                <p><span class="cil-factory mr-2"></span>Proyecto: {{proyecto.total_proyecto | currency:'':'symbol':'1.0-0'}}</p>
+                                <p><span class="cil-factory mr-2"></span>Total: {{proyecto.total_materiales | currency:'':'symbol':'1.0-0'}}</p>
+                            </div>
+                        </div>
+                        
+                        <div class="grid grid-cols-2 mt-2">  
+                            <div class="p-2 overflow-auto">
+                                <h3 class="font-semibold"><span class="cil-plus mr-1 text-green-600"></span>SOLICITADOS</h3>
+                                <h4 class="text-right text-green-600">{{proyecto?.material[0]?.valor ?? 0 | currency:'':'symbol':'1.0-0'}}</h4>
+                            </div>
+                            <div class="p-2 overflow-auto">
+                                <h3 class="font-semibold"><span class="cil-minus mr-1 text-red-600"></span>DEVUELTOS</h3>
+                                <h4 class="text-right text-red-600">{{proyecto?.material[1]?.valor ?? 0 | currency:'':'symbol':'1.0-0'}}</h4>
+                            </div>
+                        </div>
+                    </div>
+
+                    <hr>
+
+                    <div class="w-full">
+                        <div class="bg-slate-50 rounded flex justify-evenly p-2">
+                            <h2 class="text-base"> <span class="cil-money mr-1"></span> FINANZAS</h2>
+                            <div class="ml-auto flex gap-3">
+                                <p [ngClass]="{'text-red-500': proyecto.total_actual_finanzas < 0}"><span class="cil-factory mr-2"></span>Actual: {{proyecto.total_actual_finanzas | currency:'':'symbol':'1.0-0'}}</p>
+                                <p><span class="cil-factory mr-2"></span>Proyecto: {{proyecto.total_proyecto | currency:'':'symbol':'1.0-0'}}</p>
+                                <p><span class="cil-factory mr-2"></span>Total: {{proyecto.total_materiales | currency:'':'symbol':'1.0-0'}}</p>
+                            </div>
+                        </div>
+
+                        <div class="grid grid-cols-2 mt-2" *ngIf="data_finanzas.Ingreso">  
+                            <div class="p-2">
+                                <h3 class="font-semibold"><span class="cil-plus mr-1 text-green-600"></span> INGRESOS</h3>
+                                <h4 class="text-right text-green-600">{{data_finanzas.Ingreso.Ingreso | currency:'':'symbol':'1.0-0'}}</h4>
+
+                                <div class="flex gap-2 mt-2 flex-col">
+                                    <div class="rounded bg-slate-100 flex p-2" *ngFor="let ingreso of data_finanzas.Ingreso.values">
+                                        <p>{{ingreso.concepto}}</p>
+                                        <p class="ml-auto">{{ingreso.valor | currency:'':'symbol':'1.0-0'}}</p>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="p-2">
+                                <h3 class="font-semibold"><span class="cil-plus mr-1 text-red-600"></span> GASTOS</h3>
+                                <h4 class="text-right text-red-600">{{data_finanzas.Gasto.Gasto | currency:'':'symbol':'1.0-0'}}</h4>
+
+                                <div class="flex gap-2 mt-2 flex-col">
+                                    <div class="rounded bg-slate-100 flex p-2" *ngFor="let gasto of data_finanzas.Gasto.values">
+                                        <p>{{gasto.concepto}}</p>
+                                        <p class="ml-auto">{{gasto.valor | currency:'':'symbol':'1.0-0'}}</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div> 
             </div>
         </app-tabset>
     </div>

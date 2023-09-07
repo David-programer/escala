@@ -22,6 +22,7 @@ import { TabsetComponent } from './components/tabset/tabset.component';
 import { AlertComponent } from './components/alert/alert.component';
 import { DespachosComponent } from './views/despachos/despachos.component';
 import { FinanzasComponent } from './views/proyects/finanzas/finanzas.component';
+import { ThousandsPipe } from './pipes/thousands.pipe';
 
 
 @NgModule({
@@ -42,6 +43,7 @@ import { FinanzasComponent } from './views/proyects/finanzas/finanzas.component'
     AlertComponent,
     DespachosComponent,
     FinanzasComponent,
+    ThousandsPipe,
   ],
   imports: [
     BrowserModule,

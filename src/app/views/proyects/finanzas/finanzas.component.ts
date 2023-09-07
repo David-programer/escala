@@ -16,6 +16,7 @@ export class FinanzasComponent {
 
   public loading:boolean = false;
   public data_cotizacion:any = {};
+  public data_finanzas:any = {};
   public id_cotizacion:string = '';
   public update_state:boolean = false;
   public proyecto:any = {material:[]};
@@ -39,7 +40,7 @@ export class FinanzasComponent {
       inputs: [
         {value: null, name: 'tipo', icon: 'cil-puzzle', label: 'Tipo', attributes: {type: 'text', list: 'datalist_tipo_finanzas'}, validators: ['required']},
         {value: null, name: 'concepto', icon: 'cil-notes', label: 'Concepto', attributes: {type: 'text'}, validators: ['required'],},
-        {value: null, name: 'valor', icon: 'cil-money', label: 'Valor', attributes: {type: 'number'}},
+        {value: null, name: 'valor', icon: 'cil-money', label: 'Valor', attributes: {type: 'text'}, money: true,},
       ]
     },
   ];
@@ -51,16 +52,25 @@ export class FinanzasComponent {
       inputs: [
         {value: null, name: 'id_inventario', icon: 'cil-notes', label: 'Inventario', attributes: {type: 'text', list: 'datalist_inventario'}, validators: ['required'],},
         {value: null, name: 'id_proyecto', icon: 'cil-factory', label: 'Proyecto', attributes: {type: 'text',  list: 'datalist_proyects'}, validators: ['required']},
-        {value: null, name: 'cantidad', icon: 'cil-money', label: 'Cantidad', attributes: {type: 'number'}, validators: ['required'],},
-        {value: null, name: 'valor_unidad', icon: 'cil-money', label: 'Valor (und)', attributes: {type: 'number'}, validators: ['required'],},
+        {value: null, name: 'cantidad', icon: 'cil-money', label: 'Cantidad', money: true, attributes: {type: 'text'}, validators: ['required'],},
+        {value: null, name: 'valor_unidad', icon: 'cil-money', label: 'Valor (und)', money: true, attributes: {type: 'text'}, validators: ['required'],},
       ]
     }
   ]
 
   public open_proyecto(proyecto:any):any{
-    this.proyecto = proyecto;    
-    this.datatable_finanzas?.renderData.next(proyecto?.finanzas?.map((item:any)=> this.format_element(item)));
+    console.log(proyecto);
 
+    let total_actual = proyecto?.material[0]?.valor - proyecto?.material[1]?.valor,
+    total_proyecto = proyecto.proyecto[0].pres_materiales;
+
+    this.proyecto = {
+      ...proyecto,
+      total_actual, total_proyecto,
+      total_materiales: total_actual < 0 ? total_proyecto + total_actual: total_proyecto - total_actual
+    }
+
+    this.datatable_finanzas?.renderData.next(proyecto?.finanzas?.map((item:any)=> this.format_element(item)));
     this.get_services();
   };
 
@@ -79,6 +89,38 @@ export class FinanzasComponent {
         }
       })
     }
+  }
+
+  public validateChangeTabEstado(tab:string):void{
+    if(tab.trim() == 'ESTADO DEL PROYECTO'){
+      let types:any = {
+        "Gasto": {
+          "Gasto": 0,
+          "values": []
+        },
+        "Ingreso":{
+          "Ingreso": 0,
+          "values": []
+        }
+      };
+
+      let value = this.datatable_finanzas?.renderData.getValue() ?? [];
+      
+      value.forEach((item:any) => {
+        types[item.tipo][item.tipo] += item.valor
+        types[item.tipo].values.push(item);
+      });
+
+      this.data_finanzas = types;
+      console.log(this.data_finanzas);
+
+      this.proyecto = {
+        ...this.proyecto,
+        total_actual_finanzas: this.data_finanzas.Ingreso.Ingreso - this.data_finanzas.Gasto.Gasto ,
+        total_proyecto: 0,
+        total_finanzas: 0,
+      }
+    } 
   }
 
   public handler_reset():void{

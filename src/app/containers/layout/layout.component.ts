@@ -1,6 +1,7 @@
 import { filter } from 'rxjs/operators';
 import { Component, OnInit} from '@angular/core';
 import { NavigationEnd, Router } from '@angular/router';
+import { NavUtil } from 'src/app/utils/nav.util';
 
 @Component({
   templateUrl: './layout.component.html',
@@ -9,17 +10,10 @@ import { NavigationEnd, Router } from '@angular/router';
 
 export class LayoutComponent implements OnInit{
 
-  constructor(private router: Router){}
+  constructor(private router: Router, private _navUtil: NavUtil){}
 
   public currentPage:string = '';
-  public navItems:any[] = [
-    {icon: 'cil-home', title: 'Inicio', notifications: false, url: '/home'},
-    {icon: 'cil-people', title: 'Usuarios', notifications: false, url: '/users'},
-    {icon: 'cil-laptop', title: 'Proyectos', notifications: 0, url: '/proyects'},
-    {icon: 'cil-truck', title: 'Despachos', notifications: 0, url: '/despachos'},
-    {icon: 'cil-book', title: 'Inventario', notifications: 0, url: '/inventario'},
-    {icon: 'cil-baseball', title: 'Herramientas', notifications: 0, url: '/herramientas'},
-  ];
+  public navItems:any[] = [];
 
   public logout():void{
     localStorage.removeItem('token');
@@ -29,6 +23,10 @@ export class LayoutComponent implements OnInit{
   ngOnInit(): void {
     const url = window.location.href.split('/');
     this.currentPage = `/${url[url.length - 1]}`;
+
+    this._navUtil.navItems.subscribe((value)=>{
+      this.navItems = value;
+    })
 
     this.router.events.pipe(filter(event => event instanceof NavigationEnd)).subscribe((event:any) => {
       this.currentPage = event['url']

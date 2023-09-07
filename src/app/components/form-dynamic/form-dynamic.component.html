@@ -12,6 +12,7 @@
                     <input 
                         #input_form
                         id="{{input.name}}"
+                        [value]="input.money == true ? (input_form.value | thousands ) : input_form.value"
                         [checked]="input.value"
                         [formControlName]="input.name"
                         (change)="validate_input(input.name)"
