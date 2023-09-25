@@ -35,7 +35,7 @@ export class DespachosComponent implements OnInit{
   });
 
   public change_value_inventario(inventario:any):void{
-    inventario.cantidad -= inventario.cantidad_usuario
+    inventario.cantidad = inventario.cantidad_static - inventario.cantidad_usuario
   }
 
   public delete_inventario(inventario_selected:any):void{
@@ -49,15 +49,17 @@ export class DespachosComponent implements OnInit{
 
   public select_inventario():void{
     let id_inventario = this.form_despachos.controls['inventario_selected'].value,
-    item_inventario = this.data_inventario.find(inventario => inventario.id == id_inventario);
+    item_inventario = this.data_inventario.find(inventario => inventario.id == id_inventario),
+    cantidad = item_inventario.cantidad - 1;
 
     if(id_inventario == 'null') return;
 
 
     this.inventarios_selected.push({
       ...item_inventario,
+      cantidad,
       cantidad_usuario: 1,
-      cantidad: item_inventario.cantidad - 1,
+      cantidad_static: cantidad
     });
 
     this.form_despachos.controls['inventario_selected'].setValue("");

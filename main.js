@@ -5,6 +5,8 @@ const args = process.argv.slice(1), serve = args.some(val => val === '--serve');
 
 let appWin;
 
+//----------------------------------------- CREATE WINDOW ------------------------------------------------//
+
 const createWindow = ()=>{
     const {width, height} = screen.getPrimaryDisplay().workAreaSize;
 
@@ -26,7 +28,7 @@ const createWindow = ()=>{
         appWin.loadURL(`file://${__dirname}/dist/index.html`);
     }
     
-    appWin.webContents.openDevTools();
+    // appWin.webContents.openDevTools();
     // appWin.webContents.on('os-storage-comunication', (message)=>{
     // })
 

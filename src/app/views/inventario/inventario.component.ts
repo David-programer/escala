@@ -52,7 +52,7 @@ export class InventarioComponent implements OnInit {
     this.state_edith = true;
 
     let {id, cantidad, nombre_material, valor_unidad, descripccion, id_unidad, cantidad_min} = data;
-    id_unidad = this.list_unidades.find(item => item.id == id_unidad)?.id;
+    id_unidad = this.list_unidades.find(item => item.id == id_unidad)?.unidades;
     this.id_update = id;
 
     this.form_dynamic?.form_group.setValue({cantidad_min, cantidad, nombre_material, valor_unidad, descripccion, id_unidad})
@@ -86,9 +86,9 @@ export class InventarioComponent implements OnInit {
         inputs: [
           {value: null, name: 'nombre_material', icon: 'cil-user', label: 'Material', attributes: {type: 'text'}, validators: ['required']},
           {value: null, name: 'id_unidad', icon: 'cil-barcode', label: 'Tipo', attributes: {type: 'text', list:"datalist_unidades"}, validators: ['required']},
-          {value: null, name: 'cantidad', icon: 'cil-barcode', label: 'Cantidad', attributes: {type: 'number'}, validators: ['required']},
-          {value: null, name: 'cantidad_min', icon: 'cil-money', label: 'Cantidad mínima', attributes: {type: 'number'}, validators: ['required']},
-          {value: null, name: 'valor_unidad', icon: 'cil-money', label: 'Valor por unidad', attributes: {type: 'number'}, validators: ['required']},
+          {value: null, name: 'cantidad', icon: 'cil-barcode', label: 'Cantidad', money: true, attributes: {type: 'text'}, validators: ['required']},
+          {value: null, name: 'cantidad_min', icon: 'cil-money', label: 'Cantidad mínima', money: true, attributes: {type: 'text'}, validators: ['required']},
+          {value: null, name: 'valor_unidad', icon: 'cil-money', label: 'Valor por unidad', money: true, attributes: {type: 'text'}, validators: ['required']},
           {value: null, name: 'descripccion', icon: 'cil-notes', label: 'Descripción', attributes: {type: 'text'}},
         ]
       },

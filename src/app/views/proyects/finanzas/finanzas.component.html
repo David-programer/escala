@@ -7,7 +7,8 @@
     <div>
         <app-tabset
             id="finanzas"
-            [tabs]="['INGRESO | EGRESO', 'COTIZACIONES']"
+            (changeTab)="validateChangeTabEstado($event)"
+            [tabs]="['INGRESO | EGRESO', 'COTIZACIONES', 'ESTADO DEL PROYECTO']"
         >
             <div id="INGRESO | EGRESO">
                 <app-tabset
@@ -18,18 +19,18 @@
                 >
                     <div id="LISTAR FINANZAS">
                         <div class="mb-5 mt-5">
-                            <h3 class="text-lg text-gray-700 font-bold"><span class="cil-money mr-2"></span> REPORTE DE FINANZAS </h3>
+                            <h3 class="text-lg text-gray-700 font-bold"><span class="cil-money mr-2"></span> REPORTE DE MATERIALES </h3>
                     
                             <div class="grid grid-cols-2 mt-2">
                                 <div class="p-4 cursor-pointer border">
                                     <span class="text-sm text-gray-500 font-semibold"> <span class="mr-1 cil-caret-bottom"></span>Gasto</span>
-                                    <p><span class="text-sm text-gray-500">{{proyecto?.material[0]?.concepto}}</span></p>
-                                    <h2 class="text-gray-800 font-bold tracking-wider">{{proyecto?.material[0]?.valor ?? 0 | currency:'':'symbol':'1.0-0'}}</h2>
+                                    <p><span class="text-sm text-gray-500">Total materiales Entregados</span></p>
+                                    <h2 class="text-gray-800 font-bold tracking-wider">{{proyecto?.material[1]?.valor ?? 0 | currency:'':'symbol':'1.0-0'}}</h2>
                                 </div>
                                 <div class="p-4 cursor-pointer border">
                                     <span class="text-sm text-gray-500 font-semibold"> <span class="mr-1 cil-caret-top"></span> Ingreso</span>
-                                    <p><span class="text-sm text-gray-500">{{proyecto.material[1]?.concepto}}</span></p>
-                                    <h2 class="text-gray-800 font-bold tracking-wider">{{proyecto?.material[1]?.valor ?? 0 | currency:'':'symbol':'1.0-0'}}</h2>
+                                    <p><span class="text-sm text-gray-500">Total materiales Devueltos</span></p>
+                                    <h2 class="text-gray-800 font-bold tracking-wider">{{proyecto?.material[0]?.valor ?? 0 | currency:'':'symbol':'1.0-0'}}</h2>
                                 </div>
                             </div>
                         </div>
@@ -98,6 +99,93 @@
                         ></app-datatable>
                     </div>
                 </app-tabset>
+            </div>
+
+            <div id="ESTADO DEL PROYECTO">
+                <div class="flex gap-3 flex-col">
+                    <div class="my-3">
+                        <h3 class="text-base text-gray-700 font-bold"><span class="cil-money mr-2"></span> PRESUPUESTOS </h3>
+
+                        <div class="grid grid-cols-4 mt-2">
+                            <div class="p-4 cursor-pointer border">
+                                <span class="text-sm text-gray-500 font-semibold"> <span class="mr-1 cil-walk"></span> Mano de obra</span>
+                                <h2 class="text-gray-800 font-bold tracking-wider">{{proyecto.pres_mano_obra | currency:'':'symbol':'1.0-0'}}</h2>
+                            </div>
+                            <div class="p-4 cursor-pointer border">
+                                <span class="text-sm text-gray-500 font-semibold"> <span class="mr-1 cil-baseball"></span> Materiales</span>
+                                <h2 class="text-gray-800 font-bold tracking-wider">{{proyecto.pres_materiales | currency:'':'symbol':'1.0-0'}}</h2>
+
+                            </div>
+                            <div class="p-4 cursor-pointer border">
+                                <span class="text-sm text-gray-500 font-semibold">Otros</span>
+                                <h2 class="text-gray-800 font-bold tracking-wider">{{proyecto.pres_otros | currency:'':'symbol':'1.0-0'}}</h2>
+                            </div>
+                            <div class="p-4 cursor-pointer border">
+                                <span class="text-sm text-gray-500 font-semibold"><span class="mr-1 cil-graph"></span> Total</span>
+                                <h2 class="text-gray-800 font-bold tracking-wider">{{proyecto.total | currency:'':'symbol':'1.0-0'}}</h2>
+                            </div>
+                        </div>
+                    </div>
+
+                    <hr>
+
+                    <div class="w-full">
+                        <h3 class="text-base text-gray-700 font-bold"><span class="cil-truck mr-2"></span> MATERIALES </h3>
+                        <div class="bg-slate-50 rounded flex p-2 mt-4 gap-5">
+                            <p><span class="cil-factory mr-2"></span>Actual: {{proyecto.total_actual_material | currency:'':'symbol':'1.0-0'}}</p>
+                            <p class="ml-auto"><span class="cil-factory mr-2"></span>Presupuesto: {{proyecto.pres_materiales | currency:'':'symbol':'1.0-0'}}</p>
+                            <p [ngClass]="{'text-red-500': proyecto.total_materiales < 0}"><span class="cil-factory mr-2"></span>Promedio: {{proyecto.total_materiales | currency:'':'symbol':'1.0-0'}}</p>
+                        </div>
+                        
+                        <div class="grid grid-cols-2 mt-2">  
+                            <div class="p-2 overflow-auto">
+                                <h3 class="font-semibold"><span class="cil-plus mr-1 text-green-600"></span>DEVUELTOS</h3>
+                                <h4 class="text-right text-green-600">{{proyecto?.material[0]?.valor ?? 0 | currency:'':'symbol':'1.0-0'}}</h4>
+                            </div>
+                            <div class="p-2 overflow-auto">
+                                <h3 class="font-semibold"><span class="cil-minus mr-1 text-red-600"></span>ENTREGADOS</h3>
+                                <h4 class="text-right text-red-600">{{proyecto?.material[1]?.valor ?? 0 | currency:'':'symbol':'1.0-0'}}</h4>
+                            </div>
+                        </div>
+                    </div>
+
+                    <hr>
+
+                    <div class="w-full">
+                        <h3 class="text-base text-gray-700 font-bold"><span class="cil-money mr-2"></span> FINANZAS </h3>
+                        <div class="bg-slate-50 rounded flex gap-5 p-2">
+                            <p><span class="cil-factory mr-2"></span>Actual: {{proyecto.total_actual_finanzas | currency:'':'symbol':'1.0-0'}}</p>
+                            <p class="ml-auto"><span class="cil-factory mr-2"></span>Presupuesto: {{proyecto.total_proyecto_finanzas | currency:'':'symbol':'1.0-0'}}</p>
+                            <p [ngClass]="{'text-red-500': proyecto.total_finanzas < 0}"><span class="cil-factory mr-2"></span>Promedio: {{proyecto.total_finanzas | currency:'':'symbol':'1.0-0'}}</p>
+                        </div>
+
+                        <div class="grid grid-cols-2 mt-2" *ngIf="data_finanzas.Ingreso">  
+                            <div class="p-2">
+                                <h3 class="font-semibold"><span class="cil-plus mr-1 text-green-600"></span> INGRESOS</h3>
+                                <h4 class="text-right text-green-600">{{data_finanzas.Ingreso.Ingreso | currency:'':'symbol':'1.0-0'}}</h4>
+
+                                <div class="flex gap-2 mt-2 flex-col">
+                                    <div class="rounded bg-slate-100 flex p-2" *ngFor="let ingreso of data_finanzas.Ingreso.values">
+                                        <p>{{ingreso.concepto}}</p>
+                                        <p class="ml-auto">{{ingreso.valor | currency:'':'symbol':'1.0-0'}}</p>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="p-2">
+                                <h3 class="font-semibold"><span class="cil-plus mr-1 text-red-600"></span> GASTOS</h3>
+                                <h4 class="text-right text-red-600">{{data_finanzas.Gasto.Gasto | currency:'':'symbol':'1.0-0'}}</h4>
+
+                                <div class="flex gap-2 mt-2 flex-col">
+                                    <div class="rounded bg-slate-100 flex p-2" *ngFor="let gasto of data_finanzas.Gasto.values">
+                                        <p>{{gasto.concepto}}</p>
+                                        <p class="ml-auto">{{gasto.valor | currency:'':'symbol':'1.0-0'}}</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div> 
             </div>
         </app-tabset>
     </div>

@@ -16,7 +16,15 @@ export class FormDynamicComponent implements OnInit {
 
   public submit():void{
     if(this.form_group.valid) {
-      this.submitEvent.emit(this.form_group.value);
+      let value:any = this.form_group.value;
+
+      this.inputs.forEach((section:any) => {
+        section.inputs.forEach(({money, name}:any)=>{
+          money && value[name] ? (value[name] = parseFloat(`${value[name]}`.replace(/[a-zA-Z]/g, '').replace(/,/g, ''))) : null
+        })
+      });
+
+      this.submitEvent.emit(value);
       Object.keys(this.form_group.controls)?.forEach((key: string) => {
         let INPUT = document.getElementById(key); INPUT?.classList.remove('invalid'); INPUT?.classList.remove('valid');
       });

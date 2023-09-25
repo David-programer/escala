@@ -110,7 +110,6 @@ export class ProyectsComponent implements OnInit{
   }
 
   public create_proyectos(datos:any):void{
-    this.loading = true;
 
     let data = {
       ...datos,
@@ -119,6 +118,10 @@ export class ProyectsComponent implements OnInit{
       id_estado: this.data_estados.find(item => item.nombre_estado == datos.id_estado)?.id,
     }
 
+    if(data.id_user == undefined || !data.id_user){this.alert_proyectos?.open_alert('!Selecciona un usuario válido!'); return}
+    else this.alert_proyectos?.close_alert(0);
+  
+    this.loading = true;
     this._globalService.post_service('/proyecto/insert_proyecto', data).subscribe({
       next: (response:any)=>{
         if(response.successful){
@@ -439,9 +442,9 @@ export class ProyectsComponent implements OnInit{
           {value: null, name: 'id_estado', icon: 'cil-barcode', label: 'Estado', attributes: {type: 'text', list: 'datalist-estados'}, validators: ['required'],},
           {value: null, name: 'nombre_cliente', icon: 'cil-user', label: 'Cliente', attributes: {type: 'text'},validators: ['required'],},
           {value: null, name: 'telefono_cliente', icon: 'cil-phone', label: 'Teléfono', attributes: {type: 'text'}, validators: ['required'],},
-          {value: null, name: 'pres_mano_obra', icon: 'cil-money', label: '$ Mano de obra', attributes: {type: 'number'}, validators: ['required'],},
-          {value: null, name: 'pres_materiales', icon: 'cil-money', label: '$ Materiales', attributes: {type: 'number'}, validators: ['required'],},
-          {value: null, name: 'pres_otros', icon: 'cil-money', label: '$ otros', attributes: {type: 'number'}, validators: ['required'],},
+          {value: null, name: 'pres_mano_obra', icon: 'cil-money', label: '$ Mano de obra', money:true, attributes: {type: 'text'}, validators: ['required'],},
+          {value: null, name: 'pres_materiales', icon: 'cil-money', label: '$ Materiales', money:true, attributes: {type: 'text'}, validators: ['required'],},
+          {value: null, name: 'pres_otros', icon: 'cil-money', label: '$ otros', money:true, attributes: {type: 'text'}, validators: ['required'],},
           {value: null, name: 'observacion', icon: 'cil-notes', label: 'Observacion', attributes: {type: 'text'}},
         ]
       },
