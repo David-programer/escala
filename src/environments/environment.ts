@@ -1,4 +1,4 @@
 export const environment = {
-    production: false,
-    url: 'https://app-aescala-back.onrender.com'
-  };
+  production: false,
+  url: 'http://srv428007.hstgr.cloud'
+};
