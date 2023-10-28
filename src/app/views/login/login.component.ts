@@ -59,7 +59,7 @@ export class LoginComponent implements OnInit {
               {icon: 'cil-truck', title: 'Despachos', notifications: 0, url: '/despachos'},
               {icon: 'cil-book', title: 'Inventario', notifications: 0, url: '/inventario'},
               {icon: 'cil-baseball', title: 'Herramientas', notifications: 0, url: '/herramientas'},
-
+              {icon: 'cil-laptop', title: 'Proyectos', notifications: 0, url: '/proyects'},
             ]
             : [
               {icon: 'cil-home', title: 'Inicio', notifications: false, url: '/home'},
@@ -70,9 +70,6 @@ export class LoginComponent implements OnInit {
               {icon: 'cil-baseball', title: 'Herramientas', notifications: 0, url: '/herramientas'},
             ]
           )
-
-          
-
           localStorage.setItem('token', response.data.token);
           this.router.navigate(['/home']);
           // this.router.navigate(['/inventario']);   

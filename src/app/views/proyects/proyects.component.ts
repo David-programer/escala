@@ -160,7 +160,6 @@ export class ProyectsComponent implements OnInit{
   // ------------------------------------ TAREAS --------------------------------------- //
 
   public handler_update_tarea(data:any):void{
-
     this.update_state_tareas = true;
     this.id_tarea = data.id;
 
@@ -191,7 +190,7 @@ export class ProyectsComponent implements OnInit{
       id: this.id_tarea,
       fec_inicio: data.fec_inicio_,
       id_proyecto: proyect.id,
-      id_user: this.list_users.find(item => item.nombre_completo.toUpperCase() == data.id_user_tareas.toUpperCase())?.id,
+      id_user: this.list_users.find(item => item.nombre_completo.toUpperCase().trim() == data.id_user_tareas.toUpperCase().trim())?.id,
       id_tarea_tipo: this.data_tipo_tareas.find(item => item.nombre_tarea.toUpperCase() == data.id_tarea_tipo.toUpperCase())?.id,
       id_tarea_estado: this.data_estados_tareas.find(item => item.nombre_estado_tarea.toUpperCase() == data.id_tarea_estado.toUpperCase())?.id,
     }
